@@ -10,4 +10,8 @@ describe('responsive camera framing', () => {
     expect(rigSource).toContain('getHomeCameraZ(state.size.width, state.size.height, fov)')
     expect(sceneSource).toContain('getHomeCameraZ(window.innerWidth, window.innerHeight, homeFov)')
   })
+
+  test('keeps the home camera fixed when the pointer moves', () => {
+    expect(rigSource).not.toContain('state.pointer')
+  })
 })

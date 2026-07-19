@@ -19,10 +19,9 @@ export function CameraRig({ focus }: { focus: DoorPlacement | null }) {
       targetPos.set(...focus.focus)
       targetLook.set(focus.position[0], 1.4, focus.position[2])
     } else {
-      // subtle pointer parallax at home — small and slow, never distracting
       const fov = 'fov' in state.camera && typeof state.camera.fov === 'number' ? state.camera.fov : 40
       const homeZ = getHomeCameraZ(state.size.width, state.size.height, fov)
-      targetPos.set(HOME_POS.x + state.pointer.x * 0.5, HOME_POS.y + state.pointer.y * 0.25, homeZ)
+      targetPos.set(HOME_POS.x, HOME_POS.y, homeZ)
       targetLook.copy(HOME_LOOK)
     }
     easing.damp3(state.camera.position, targetPos, 0.45, delta)

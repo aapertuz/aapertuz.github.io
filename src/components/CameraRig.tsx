@@ -4,8 +4,8 @@ import { useRef } from 'react'
 import { Vector3 } from 'three'
 import type { DoorPlacement } from '../scene/layout'
 
-const HOME_POS = new Vector3(0, 1.7, 9.5)
-const HOME_LOOK = new Vector3(0, 1.4, -6)
+const HOME_POS = new Vector3(0, 2.3, 11)
+const HOME_LOOK = new Vector3(0, 1.15, -4)
 
 const targetPos = new Vector3()
 const targetLook = new Vector3()

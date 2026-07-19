@@ -10,13 +10,18 @@ import { StarField } from './StarField'
 
 const placements = layoutDoors(projects)
 
+// Narrow viewports need a wider field of view and a bit more distance so the
+// full path and name stay framed instead of being cropped by the tall aspect.
+const isNarrow =
+  typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
+
 export function Scene() {
   const [selected, setSelected] = useState<number | null>(null)
 
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ position: [0, 1.7, 9.5], fov: 42 }}
+      camera={{ position: [0, 2.3, isNarrow ? 13.5 : 11], fov: isNarrow ? 52 : 40 }}
       onPointerMissed={() => setSelected(null)}
     >
       <color attach="background" args={['#000000']} />

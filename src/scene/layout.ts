@@ -7,11 +7,11 @@ export interface DoorPlacement {
   focus: [number, number, number]
 }
 
-const SIDE_X = 3.4 // distance of each door row from the path center
-const NEAR_Z = 4.5 // z of the doors closest to the viewer
-const SPACING = 2.6 // z gap between rows
-const INWARD = 0.32 // radians each door tilts toward the viewer
-const FOCUS_DIST = 2.6 // how far in front of a door the camera stops
+const SIDE_X = 3.8 // distance of each door row from the path center
+const NEAR_Z = 3.0 // z of the doors closest to the viewer
+const SPACING = 2.8 // z gap between rows
+const INWARD = 0.3 // radians each door tilts toward the viewer
+const FOCUS_DIST = 4.6 // how far in front of a door the camera stops
 const FOCUS_HEIGHT = 1.5
 
 export function layoutDoors(projects: Project[]): DoorPlacement[] {

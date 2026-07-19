@@ -29,8 +29,8 @@ export function Door({ placement, accent = false, selected, onSelect }: DoorProp
 
   useFrame((_, delta) => {
     const lit = hovered || selected
-    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', lit ? 2.4 : 1.2, 0.2, delta)
-    if (light.current) easing.damp(light.current, 'intensity', lit ? 3.2 : 1.6, 0.2, delta)
+    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', lit ? 1.15 : 0.6, 0.2, delta)
+    if (light.current) easing.damp(light.current, 'intensity', lit ? 2.6 : 1.4, 0.2, delta)
   })
 
   const frameColor = accent ? '#e8a33d' : '#141414'
@@ -72,10 +72,9 @@ export function Door({ placement, accent = false, selected, onSelect }: DoorProp
         <planeGeometry args={[OPENING_W, OPENING_H]} />
         <meshStandardMaterial
           ref={glow}
-          color="#1a1206"
-          emissive="#ffb45e"
-          emissiveIntensity={1.2}
-          toneMapped={false}
+          color="#100a03"
+          emissive="#f0a24a"
+          emissiveIntensity={0.6}
         />
       </mesh>
       <pointLight ref={light} position={[0, OPENING_H / 2, 0.6]} intensity={1.6} distance={5} color="#ffb45e" />

@@ -8,4 +8,6 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  // Force a single copy of three so drei/troika instanceof checks resolve.
+  resolve: { dedupe: ['three'] },
 })

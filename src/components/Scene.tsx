@@ -1,6 +1,7 @@
 import { Canvas } from '@react-three/fiber'
 import { Suspense, useState } from 'react'
 import { projects } from '../data/projects'
+import { getHomeCameraZ } from '../scene/cameraFraming'
 import { layoutDoors } from '../scene/layout'
 import { CameraRig } from './CameraRig'
 import { Door } from './Door'
@@ -14,6 +15,11 @@ const placements = layoutDoors(projects)
 // full path and name stay framed instead of being cropped by the tall aspect.
 const isNarrow =
   typeof window !== 'undefined' && window.matchMedia('(max-width: 640px)').matches
+const homeFov = isNarrow ? 52 : 40
+const homeZ =
+  typeof window === 'undefined'
+    ? 11
+    : getHomeCameraZ(window.innerWidth, window.innerHeight, homeFov)
 
 export function Scene() {
   const [selected, setSelected] = useState<number | null>(null)
@@ -21,7 +27,7 @@ export function Scene() {
   return (
     <Canvas
       dpr={[1, 1.5]}
-      camera={{ position: [0, 2.3, isNarrow ? 13.5 : 11], fov: isNarrow ? 52 : 40 }}
+      camera={{ position: [0, 2.3, homeZ], fov: homeFov }}
       onPointerMissed={() => setSelected(null)}
     >
       <color attach="background" args={['#000000']} />

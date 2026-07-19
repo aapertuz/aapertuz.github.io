@@ -2,6 +2,7 @@ import { useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import { useRef } from 'react'
 import { Vector3 } from 'three'
+import { getHomeCameraZ } from '../scene/cameraFraming'
 import type { DoorPlacement } from '../scene/layout'
 
 const HOME_POS = new Vector3(0, 2.3, 11)
@@ -19,7 +20,9 @@ export function CameraRig({ focus }: { focus: DoorPlacement | null }) {
       targetLook.set(focus.position[0], 1.4, focus.position[2])
     } else {
       // subtle pointer parallax at home — small and slow, never distracting
-      targetPos.set(HOME_POS.x + state.pointer.x * 0.5, HOME_POS.y + state.pointer.y * 0.25, HOME_POS.z)
+      const fov = 'fov' in state.camera && typeof state.camera.fov === 'number' ? state.camera.fov : 40
+      const homeZ = getHomeCameraZ(state.size.width, state.size.height, fov)
+      targetPos.set(HOME_POS.x + state.pointer.x * 0.5, HOME_POS.y + state.pointer.y * 0.25, homeZ)
       targetLook.copy(HOME_LOOK)
     }
     easing.damp3(state.camera.position, targetPos, 0.45, delta)

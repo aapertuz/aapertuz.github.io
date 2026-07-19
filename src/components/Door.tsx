@@ -1,9 +1,10 @@
 import { useCursor } from '@react-three/drei'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { easing } from 'maath'
-import { useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MeshStandardMaterial, PointLight } from 'three'
 import type { DoorPlacement } from '../scene/layout'
+import { createRoomTexture } from './roomTexture'
 
 const FRAME_W = 1.5
 const FRAME_H = 2.7
@@ -24,11 +25,17 @@ export function Door({ placement, accent = false, selected, onSelect }: DoorProp
   useCursor(hovered)
   const glow = useRef<MeshStandardMaterial>(null)
   const light = useRef<PointLight>(null)
+  const roomTexture = useMemo(
+    () => createRoomTexture(placement.project),
+    [placement.project],
+  )
+
+  useEffect(() => () => roomTexture?.dispose(), [roomTexture])
 
   useFrame((_, delta) => {
     const lit = hovered || selected
-    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', lit ? 1.15 : 0.6, 0.2, delta)
-    if (light.current) easing.damp(light.current, 'intensity', lit ? 2.6 : 1.4, 0.2, delta)
+    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', lit ? 0.34 : 0.12, 0.2, delta)
+    if (light.current) easing.damp(light.current, 'intensity', lit ? 2.2 : 1.1, 0.2, delta)
   })
 
   const frameColor = accent ? '#e8a33d' : '#141414'
@@ -70,12 +77,20 @@ export function Door({ placement, accent = false, selected, onSelect }: DoorProp
         <planeGeometry args={[OPENING_W, OPENING_H]} />
         <meshStandardMaterial
           ref={glow}
-          color="#100a03"
-          emissive="#f0a24a"
-          emissiveIntensity={0.6}
+          map={roomTexture ?? undefined}
+          color={roomTexture ? '#ffffff' : placement.project.room.base}
+          emissive={placement.project.room.light}
+          emissiveIntensity={0.12}
+          roughness={0.72}
         />
       </mesh>
-      <pointLight ref={light} position={[0, OPENING_H / 2, 0.6]} intensity={1.6} distance={5} color="#ffb45e" />
+      <pointLight
+        ref={light}
+        position={[0, OPENING_H / 2, 0.6]}
+        intensity={1.1}
+        distance={5}
+        color={placement.project.room.light}
+      />
 
     </group>
   )

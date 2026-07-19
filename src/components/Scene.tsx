@@ -1,5 +1,6 @@
 import { Canvas } from '@react-three/fiber'
 import { Floor } from './Floor'
+import { NameText } from './NameText'
 import { StarField } from './StarField'
 
 export function Scene() {
@@ -12,6 +13,7 @@ export function Scene() {
       <pointLight position={[0, 2.5, -4]} intensity={8} />
       <StarField />
       <Floor />
+      <NameText />
     </Canvas>
   )
 }

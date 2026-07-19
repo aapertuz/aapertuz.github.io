@@ -1,7 +1,13 @@
 import { Canvas } from '@react-three/fiber'
+import { Suspense } from 'react'
+import { projects } from '../data/projects'
+import { layoutDoors } from '../scene/layout'
+import { Door } from './Door'
 import { Floor } from './Floor'
 import { NameText } from './NameText'
 import { StarField } from './StarField'
+
+const placements = layoutDoors(projects)
 
 export function Scene() {
   return (
@@ -13,7 +19,18 @@ export function Scene() {
       <pointLight position={[0, 2.5, -4]} intensity={8} />
       <StarField />
       <Floor />
-      <NameText />
+      <Suspense fallback={null}>
+        <NameText />
+        {placements.map((p, i) => (
+          <Door
+            key={p.project.title}
+            placement={p}
+            accent={i === placements.length - 1}
+            selected={false}
+            onSelect={() => {}}
+          />
+        ))}
+      </Suspense>
     </Canvas>
   )
 }

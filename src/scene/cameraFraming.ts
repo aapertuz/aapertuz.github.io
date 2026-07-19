@@ -1,4 +1,4 @@
-const DESKTOP_HOME_Z = 11
+const DESKTOP_HOME_Z = 9.5
 const NEAR_DOOR_Z = 3
 const DOOR_ROW_X = 3.8
 const HORIZONTAL_PADDING = 0.82

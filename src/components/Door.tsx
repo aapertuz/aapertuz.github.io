@@ -33,9 +33,10 @@ export function Door({ placement, accent = false, selected, onSelect }: DoorProp
   useEffect(() => () => roomTexture?.dispose(), [roomTexture])
 
   useFrame((_, delta) => {
-    const lit = hovered || selected
-    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', lit ? 0.34 : 0.12, 0.2, delta)
-    if (light.current) easing.damp(light.current, 'intensity', lit ? 2.2 : 1.1, 0.2, delta)
+    const emissiveIntensity = selected ? 0.2 : hovered ? 0.34 : 0.12
+    const lightIntensity = selected ? 1.5 : hovered ? 2.2 : 1.1
+    if (glow.current) easing.damp(glow.current, 'emissiveIntensity', emissiveIntensity, 0.2, delta)
+    if (light.current) easing.damp(light.current, 'intensity', lightIntensity, 0.2, delta)
   })
 
   const frameColor = accent ? '#e8a33d' : '#141414'

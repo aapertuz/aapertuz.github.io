@@ -25,9 +25,8 @@ function Line({ text, size, y }: { text: string; size: number; y: number }) {
 export function NameText() {
   return (
     <group position={[0, 0, -6]}>
-      <Line text="I'm" size={0.3} y={3.05} />
-      <Line text="Lex" size={0.7} y={2.15} />
-      <Line text="Pertuz" size={1.1} y={0.85} />
+      <Line text="I'm" size={0.7} y={2.15} />
+      <Line text="Alexis Pertuz" size={0.78} y={0.85} />
       {/* dedicated light so the white faces read against the black background */}
       <pointLight position={[0, 2, 4]} intensity={14} distance={12} />
     </group>

@@ -26,4 +26,9 @@ describe('Door visuals', () => {
     expect(source).toContain('getImageData')
     expect(source).toContain('fillText')
   })
+
+  test('keeps focused doors dimmer than hovered doors for text readability', () => {
+    expect(doorSource).toContain('selected ? 0.2 : hovered ? 0.34 : 0.12')
+    expect(doorSource).toContain('selected ? 1.5 : hovered ? 2.2 : 1.1')
+  })
 })

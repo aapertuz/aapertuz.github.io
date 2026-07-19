@@ -6,6 +6,7 @@ import { layoutDoors } from '../scene/layout'
 import { CameraRig } from './CameraRig'
 import { Door } from './Door'
 import { Floor } from './Floor'
+import { HeroManifesto } from './HeroManifesto'
 import { NameText } from './NameText'
 import { StarField } from './StarField'
 
@@ -38,6 +39,7 @@ export function Scene() {
       <StarField />
       <Floor />
       <Suspense fallback={null}>
+        <HeroManifesto />
         <NameText />
         {placements.map((p, i) => (
           <Door

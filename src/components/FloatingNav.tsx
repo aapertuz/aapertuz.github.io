@@ -80,6 +80,28 @@ export function FloatingNav({ active = 'home', onSelect = () => undefined, inert
               yChannelSelector="G"
             />
           </filter>
+          <filter
+            id="floating-nav-goo"
+            x="-200%"
+            y="-400%"
+            width="500%"
+            height="900%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feGaussianBlur
+              in="SourceGraphic"
+              stdDeviation="7"
+              result="floating-nav-goo-blur"
+            />
+            <feColorMatrix
+              in="floating-nav-goo-blur"
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      0 0 0 20 -9"
+            />
+          </filter>
         </defs>
       </svg>
       <span

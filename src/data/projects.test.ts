@@ -13,25 +13,34 @@ describe('project rooms', () => {
 
   test('preserves the four reference projects and palette stops', () => {
     expect(projects.slice(0, 4).map(({ title }) => title)).toEqual([
-      'Omoi',
+      'Amirani',
       'GigPilot',
       'Weft',
       'Ascent',
     ])
     expect(projects[0].description.startsWith('A memory layer')).toBe(true)
     expect(projects[1].description.startsWith('Finds gigs matched')).toBe(true)
-    expect(projects[2].description.startsWith('Professional connection')).toBe(true)
+    expect(projects[2].description.startsWith('Matches small groups')).toBe(true)
     expect(projects[3].description.startsWith('Capital intelligence')).toBe(true)
-    expect(projects[0].room.gradient).toEqual(['#262019', '#141310', '#05040300'])
+    expect(projects[0].room.gradient).toEqual(['#1c1c1c', '#0e0e0e', '#00000000'])
     expect(projects[1].room.gradient).toEqual(['#2036e6', '#1626c9', '#0d1a99'])
     expect(projects[2].room.gradient).toEqual(['#ff9a3d', '#f26a0a', '#b34700'])
     expect(projects[3].room.gradient).toEqual(['#35d17c', '#12a657', '#0a7a3d'])
   })
 
-  test('uses distinct violet and deep-red placeholder palettes', () => {
-    expect(projects[4].status).toBe('COMING SOON')
-    expect(projects[4].room.gradient).toEqual(['#a978f2', '#7442c8', '#432477'])
-    expect(projects[5].status).toBe('COMING SOON')
-    expect(projects[5].room.gradient).toEqual(['#e05a64', '#b62d3d', '#681721'])
+  test('defines tool stacks and public destinations for project rooms', () => {
+    expect(projects.every((project) => project.tools.length > 0)).toBe(true)
+    expect(projects.filter((project) => project.link === '').map(({ title }) => title)).toEqual([
+      'Amirani',
+    ])
+  })
+
+  test('uses distinct deep-red and violet palettes for ByteForm and Agendamax', () => {
+    expect(projects[4].title).toBe('ByteForm')
+    expect(projects[4].status).toBe('LIVE')
+    expect(projects[4].room.gradient).toEqual(['#e05a64', '#b62d3d', '#681721'])
+    expect(projects[5].title).toBe('Agendamax')
+    expect(projects[5].status).toBe('SHIPPING')
+    expect(projects[5].room.gradient).toEqual(['#a978f2', '#7442c8', '#432477'])
   })
 })

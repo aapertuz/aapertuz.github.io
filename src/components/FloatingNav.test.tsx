@@ -73,7 +73,7 @@ describe('FloatingNav', () => {
     expect(css).toContain('.floating-nav__particle-effect')
     expect(css).toContain('.floating-nav__particle')
     expect(css).toContain('.floating-nav__point')
-    expect(css).toContain('filter: blur(7px) contrast(20)')
+    expect(css).toContain('filter: url(#floating-nav-goo)')
     expect(css).toContain('@keyframes floating-nav-particle')
     expect(css).toContain('@keyframes floating-nav-point')
     expect(css).not.toContain('@keyframes nav-liquid')
@@ -90,10 +90,14 @@ describe('FloatingNav', () => {
     expect(css).toContain('display: none')
   })
 
-  test('uses a dark contrast canvas so the particles resolve into a solid pill', () => {
-    expect(css).toContain('.floating-nav__particle-effect::before')
-    expect(css).toContain('inset: -75px')
-    expect(css).toContain('background: #000')
+  test('uses transparent alpha compositing so the effect cannot cover the scene', async () => {
+    const source = await Bun.file(new URL('./FloatingNav.tsx', import.meta.url)).text()
+
+    expect(source).toContain('id="floating-nav-goo"')
+    expect(source).toContain('<feGaussianBlur')
+    expect(source).toContain('<feColorMatrix')
+    expect(css).toContain('filter: url(#floating-nav-goo)')
+    expect(css).not.toContain('.floating-nav__particle-effect::before')
   })
 
   test('keeps the selected pill visible without color-mix support', () => {

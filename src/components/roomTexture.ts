@@ -5,6 +5,29 @@ const WIDTH = 768
 const HEIGHT = 1344
 const PAD_X = 92
 const TEXT_WIDTH = WIDTH - PAD_X * 2
+const TOOL_Y = 1124
+const ACTION_Y = 1182
+const pineconeIconUrl = 'data:image/svg+xml,%3Csvg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" stroke="%236D5DFB" stroke-width="1.8" stroke-linecap="round"%3E%3Ccircle cx="6" cy="7" r="2.5"/%3E%3Ccircle cx="18" cy="7" r="2.5"/%3E%3Ccircle cx="12" cy="18" r="2.5"/%3E%3Cpath d="m8 8.5 3 7M16 8.5l-3 7M8.5 7h7"/%3E%3C/g%3E%3C/svg%3E'
+
+const toolIconUrls: Record<string, string> = {
+  Go: 'https://cdn.simpleicons.org/go/00ADD8',
+  JavaScript: 'https://cdn.simpleicons.org/javascript/F7DF1E',
+  'Next.js': 'https://cdn.simpleicons.org/nextdotjs/F7F4EE',
+  'Node.js': 'https://cdn.simpleicons.org/nodedotjs/83CD29',
+  'React Native': 'https://cdn.simpleicons.org/react/61DAFB',
+  Python: 'https://cdn.simpleicons.org/python/FFD43B',
+  PostgreSQL: 'https://cdn.simpleicons.org/postgresql/4169E1',
+  Pinecone: pineconeIconUrl,
+  React: 'https://cdn.simpleicons.org/react/61DAFB',
+  Vite: 'https://cdn.simpleicons.org/vite/A78BFA',
+  MCP: 'https://cdn.simpleicons.org/modelcontextprotocol/F7EAD7',
+  FastAPI: 'https://cdn.simpleicons.org/fastapi/00E5D1',
+  Supabase: 'https://cdn.simpleicons.org/supabase/3ECF8E',
+  'WhatsApp Business API': 'https://cdn.simpleicons.org/whatsapp/25D366',
+  'Google Calendar API': 'https://cdn.simpleicons.org/googlecalendar/4285F4',
+  'Claude API': 'https://cdn.simpleicons.org/anthropic/D4A27F',
+  Redis: 'https://cdn.simpleicons.org/redis/FF4438',
+}
 
 function mulberry32(seed: number) {
   return () => {
@@ -51,12 +74,51 @@ function addGrain(context: CanvasRenderingContext2D, seed: number) {
   context.putImageData(image, 0, 0)
 }
 
-function drawCopy(context: CanvasRenderingContext2D, project: Project) {
+function drawTools(
+  context: CanvasRenderingContext2D,
+  project: Project,
+  texture: CanvasTexture,
+) {
+  context.textBaseline = 'middle'
+  const gap = 12
+  const size = Math.min(76, (TEXT_WIDTH - gap * (project.tools.length - 1)) / project.tools.length)
+  project.tools.forEach((tool, index) => {
+    const x = PAD_X + index * (size + gap)
+    context.fillStyle = 'rgba(17, 17, 19, 0.9)'
+    context.strokeStyle = 'rgba(255, 255, 255, 0.3)'
+    context.lineWidth = 2
+    context.beginPath()
+    context.roundRect(x, TOOL_Y - size / 2, size, size, 12)
+    context.fill()
+    context.stroke()
+
+    const icon = new Image()
+    icon.crossOrigin = 'anonymous'
+    icon.onload = () => {
+      const inset = Math.max(12, size * 0.18)
+      context.drawImage(icon, x + inset, TOOL_Y - size / 2 + inset, size - inset * 2, size - inset * 2)
+      texture.needsUpdate = true
+    }
+    icon.src = toolIconUrls[tool]
+  })
+}
+
+function drawVisitAction(context: CanvasRenderingContext2D, project: Project) {
+  const available = Boolean(project.link)
+  const actionLabel = project.link ? 'VISIT' : 'COMING SOON'
+  context.fillStyle = available ? project.room.nameText : 'rgba(255, 255, 255, 0.32)'
+  context.fillRect(PAD_X, ACTION_Y, TEXT_WIDTH, 2)
+  context.font = '700 25px ui-monospace, SFMono-Regular, Menlo, monospace'
+  context.textBaseline = 'top'
+  context.fillText(available ? `${actionLabel}  ↗` : actionLabel, PAD_X, ACTION_Y + 22)
+}
+
+function drawCopy(context: CanvasRenderingContext2D, project: Project, texture: CanvasTexture) {
   context.textBaseline = 'top'
   context.fillStyle = project.room.text
   context.font = '500 27px ui-monospace, SFMono-Regular, Menlo, monospace'
   context.fillText(
-    `${project.index} · ${project.discipline} · ${project.status}`,
+    `${project.index} · ${project.industry} · ${project.status}`,
     PAD_X,
     360,
   )
@@ -74,6 +136,9 @@ function drawCopy(context: CanvasRenderingContext2D, project: Project) {
 
   context.font = '500 27px ui-monospace, SFMono-Regular, Menlo, monospace'
   context.fillText(project.role.toUpperCase(), PAD_X, 1030)
+
+  drawTools(context, project, texture)
+  drawVisitAction(context, project)
 }
 
 export function createRoomTexture(project: Project): CanvasTexture | null {
@@ -106,12 +171,11 @@ export function createRoomTexture(project: Project): CanvasTexture | null {
   context.fillStyle = edgeShade
   context.fillRect(0, 0, WIDTH, HEIGHT)
 
-  addGrain(context, Number(project.index))
-  drawCopy(context, project)
-
   const texture = new CanvasTexture(canvas)
   texture.colorSpace = SRGBColorSpace
   texture.anisotropy = 4
+  addGrain(context, Number(project.index))
+  drawCopy(context, project, texture)
   texture.needsUpdate = true
   return texture
 }

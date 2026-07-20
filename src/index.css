@@ -171,17 +171,9 @@ canvas {
   width: var(--nav-item-width);
   height: calc(100% - (var(--nav-pad) * 2));
   pointer-events: none;
-  filter: blur(7px) contrast(20);
+  filter: url(#floating-nav-goo);
   mix-blend-mode: lighten;
   transform: translate3d(var(--selection-x), 0, 0);
-}
-
-.floating-nav__particle-effect::before {
-  content: '';
-  position: absolute;
-  inset: -75px;
-  z-index: -2;
-  background: #000;
 }
 
 .floating-nav__particle-effect::after {

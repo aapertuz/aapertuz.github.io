@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import {
   NAV_ITEMS,
   createGravityParticles,
@@ -21,8 +21,14 @@ function getParticleStyle(particle: GravityParticle): ParticleStyle {
   }
 }
 
-export function FloatingNav() {
-  const [selected, setSelected] = useState<NavItem>('home')
+interface FloatingNavProps {
+  active?: NavItem
+  onSelect?: (item: NavItem) => void
+  inert?: boolean
+}
+
+export function FloatingNav({ active = 'home', onSelect = () => undefined, inert = false }: FloatingNavProps) {
+  const [selected, setSelected] = useState<NavItem>(active)
   const [effect, setEffect] = useState(() => ({
     cycle: 0,
     particles: createGravityParticles(),
@@ -31,17 +37,22 @@ export function FloatingNav() {
   const select = (item: NavItem) => {
     if (item === selected) return
     setSelected(item)
+    onSelect(item)
     setEffect((current) => ({
       cycle: current.cycle + 1,
       particles: createGravityParticles(),
     }))
   }
 
+  useEffect(() => setSelected(active), [active])
+
   return (
     <nav
       className="floating-nav"
       aria-label="Primary navigation"
       data-selected={selected}
+      aria-hidden={inert || undefined}
+      style={inert ? { pointerEvents: 'none' } : undefined}
     >
       <svg className="floating-nav__filters" aria-hidden="true">
         <defs>

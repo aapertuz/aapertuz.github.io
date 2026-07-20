@@ -221,6 +221,130 @@ canvas {
   outline-color: #5a3308;
 }
 
+.about-window {
+  position: fixed;
+  z-index: 20;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  width: min(960px, calc(100vw - 32px));
+  max-height: calc(100dvh - 128px);
+  padding: clamp(24px, 4vw, 48px);
+  overflow: auto;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 22px;
+  background: rgb(20 20 20 / 72%);
+  backdrop-filter: blur(12px) saturate(155%) url(#floating-nav-glass);
+  -webkit-backdrop-filter: blur(12px) saturate(155%);
+  box-shadow:
+    inset 1.5px 2.5px 0 -2px rgb(255 255 255 / 72%),
+    inset -2px -7px 2px -6px rgb(255 255 255 / 24%),
+    inset 0 3px 5px -3px rgb(0 0 0 / 70%),
+    0 24px 80px rgb(0 0 0 / 48%);
+  color: #f7f4ee;
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + 12px)) scale(0.985);
+  animation: about-window-enter 420ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.about-window__header,
+.about-window__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+  gap: 32px;
+}
+
+.about-window__header {
+  align-items: start;
+  padding-bottom: 32px;
+  border-bottom: 1px solid rgb(255 255 255 / 12%);
+}
+
+.about-window__eyebrow,
+.about-window h2 {
+  color: rgb(255 255 255 / 42%);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-window h1 {
+  margin-top: 12px;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+}
+
+.about-window__role,
+.about-window__intro > p {
+  color: rgb(255 255 255 / 62%);
+}
+
+.about-window__role {
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+
+.about-window__close {
+  justify-self: end;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 5%);
+  color: #f7f4ee;
+  font: inherit;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.about-window__close:hover { border-color: rgb(255 255 255 / 22%); transform: translateY(-1px); }
+.about-window__close:active { transform: scale(0.98); }
+.about-window__close:focus-visible,
+.about-window a:focus-visible { outline: 2px solid #e8a33d; outline-offset: 3px; }
+
+.about-window__body { padding-top: 32px; }
+.about-window__body h2 { margin-bottom: 16px; }
+.about-window__intro > p { max-width: 42ch; font-size: 1.125rem; line-height: 1.55; }
+.about-window__intro h2:nth-of-type(2) { margin-top: 48px; }
+
+.about-window__technology-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; }
+.about-window__technology-list li { padding: 8px 12px; border: 1px solid rgb(255 255 255 / 12%); border-radius: 999px; color: rgb(255 255 255 / 62%); font-size: 0.8125rem; }
+.about-window__lists section + section { margin-top: 32px; }
+.about-window__lists ul { list-style: none; }
+.about-window__lists li { padding: 12px 0; border-top: 1px solid rgb(255 255 255 / 12%); color: rgb(255 255 255 / 62%); }
+.about-window__lists li:last-child { border-bottom: 1px solid rgb(255 255 255 / 12%); }
+.about-window__lists strong, .about-window__lists span { display: block; }
+.about-window__lists strong { color: #f7f4ee; font-weight: 500; }
+.about-window__lists span { margin-top: 4px; color: rgb(255 255 255 / 42%); font-size: 0.8125rem; }
+.about-window__links a { display: flex; align-items: center; justify-content: space-between; min-height: 44px; color: #f7f4ee; text-decoration: none; }
+.about-window__links a:hover { color: #e8a33d; }
+
+@keyframes about-window-enter {
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@supports not ((backdrop-filter: blur(1px))) {
+  .about-window { background: rgb(17 17 19 / 92%); }
+}
+
+@media (max-width: 767px) {
+  .about-window { width: calc(100vw - 32px); max-height: calc(100dvh - 96px); padding: 24px; }
+  .about-window__header, .about-window__body { grid-template-columns: 1fr; gap: 24px; }
+  .about-window__header { padding-bottom: 24px; }
+  .about-window__body { padding-top: 24px; }
+  .about-window__intro h2:nth-of-type(2) { margin-top: 32px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-window { animation: none; opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .about-window__close { transition-duration: 0.01ms; }
+}
+
 @keyframes floating-nav-particle {
   0% {
     opacity: 1;

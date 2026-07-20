@@ -22,13 +22,14 @@ const homeZ =
     ? 11
     : getHomeCameraZ(window.innerWidth, window.innerHeight, homeFov)
 
-export function Scene() {
+export function Scene({ aboutOpen, onNameSelect }: { aboutOpen?: boolean; onNameSelect?: () => void }) {
   const [selected, setSelected] = useState<number | null>(null)
 
   return (
     <Canvas
       dpr={[1, 1.5]}
       camera={{ position: [0, 2.3, homeZ], fov: homeFov }}
+      style={aboutOpen ? { pointerEvents: 'none' } : undefined}
       onPointerMissed={() => setSelected(null)}
     >
       <color attach="background" args={['#000000']} />
@@ -40,7 +41,7 @@ export function Scene() {
       <Floor />
       <Suspense fallback={null}>
         <HeroManifesto />
-        <NameText />
+        <NameText onSelect={onNameSelect} />
         {placements.map((p, i) => (
           <Door
             key={p.project.title}

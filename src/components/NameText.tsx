@@ -22,9 +22,9 @@ function Line({ text, size, y }: { text: string; size: number; y: number }) {
   )
 }
 
-export function NameText() {
+export function NameText({ onSelect }: { onSelect?: () => void }) {
   return (
-    <group position={[0, 0, -6]}>
+    <group position={[0, 0, -6]} onClick={onSelect}>
       <Line text="I'm" size={0.7} y={2.15} />
       <Line text="Alexis Pertuz" size={0.78} y={0.85} />
       {/* dedicated light so the white faces read against the black background */}

@@ -6,7 +6,7 @@ const manifestoFile = Bun.file(new URL('./components/HeroManifesto.tsx', import.
 
 describe('hero manifesto overlay', () => {
   test('anchors the approved copy in the world with the name lockup', async () => {
-    expect(appSource).toContain('<main className="experience">')
+    expect(appSource).toContain('<main className="experience"')
     expect(appSource).not.toContain('hero-manifesto')
     expect(await manifestoFile.exists()).toBe(true)
     expect(sceneSource).toContain("import { HeroManifesto } from './HeroManifesto'")
@@ -21,7 +21,16 @@ describe('hero manifesto overlay', () => {
 
   test('mounts the floating navigation above the existing scene', () => {
     expect(appSource).toContain("import { FloatingNav } from './components/FloatingNav'")
-    expect(appSource).toContain('<FloatingNav />')
-    expect(appSource).toContain('<Scene />')
+    expect(appSource).toContain('<FloatingNav active={active}')
+    expect(appSource).toContain('<Scene aboutOpen={aboutOpen}')
+  })
+
+  test('wires About state through both entry points and keeps the canvas inert while open', () => {
+    expect(appSource).toContain('useState<NavItem>(\'home\')')
+    expect(appSource).toContain('<AboutWindow')
+    expect(appSource).toContain('onSelect={handleNavSelect}')
+    expect(appSource).toContain('aboutOpen={aboutOpen}')
+    expect(sceneSource).toContain('<NameText onSelect={onNameSelect} />')
+    expect(sceneSource).toContain("style={aboutOpen ? { pointerEvents: 'none' } : undefined}")
   })
 })

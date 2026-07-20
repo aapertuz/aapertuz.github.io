@@ -19,6 +19,19 @@ describe('FloatingNav', () => {
     expect(markup).toContain('aria-pressed="true"')
   })
 
+  test('accepts controlled selection and emits the selection callback', () => {
+    const source = Bun.file(new URL('./FloatingNav.tsx', import.meta.url))
+    expect(source.text()).resolves.toContain('active?: NavItem')
+    expect(source.text()).resolves.toContain('onSelect?: (item: NavItem) => void')
+  })
+
+  test('restarts the particle cycle when controlled selection returns to Home', async () => {
+    const source = await Bun.file(new URL('./FloatingNav.tsx', import.meta.url)).text()
+    expect(source).toContain('if (active === selected) return')
+    expect(source).toContain('useEffect(() => {')
+    expect(source).toContain('particles: createGravityParticles()')
+  })
+
   test('renders the fifteen-particle gravity effect around the selection', () => {
     const markup = renderToStaticMarkup(<FloatingNav />)
     const particles = markup.match(/class="floating-nav__particle"/g) ?? []

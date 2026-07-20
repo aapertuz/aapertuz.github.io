@@ -18,13 +18,14 @@ describe('progressive WebGL loading', () => {
     expect(appSource).toContain('const [sceneReady, setSceneReady] = useState(false)')
     expect(appSource).toContain('onReady={() => setSceneReady(true)}')
     expect(appSource).toContain("sceneReady ? 'scene-layer scene-layer--ready' : 'scene-layer'")
-    expect(sceneSource).toContain('export function Scene({ onReady }: { onReady: () => void })')
+    expect(sceneSource).toContain('onReady: () => void')
     expect(sceneSource).toContain('onCreated={onReady}')
   })
 })
 
-describe('existing hero composition', () => {
+describe('hero and About integration', () => {
   test('retains the approved manifesto inside the 3D world', async () => {
+    expect(appSource).toContain('<main className="experience"')
     expect(await manifestoFile.exists()).toBe(true)
     expect(sceneSource).toContain("import { HeroManifesto } from './HeroManifesto'")
     expect(sceneSource).toContain('<HeroManifesto />')
@@ -36,9 +37,18 @@ describe('existing hero composition', () => {
     expect(manifestoSource).toContain('position={[0, 3.45, -6]}')
   })
 
-  test('keeps floating navigation above the progressive scene', () => {
+  test('keeps controlled navigation and the About window above the lazy scene', () => {
     expect(appSource).toContain("import { FloatingNav } from './components/FloatingNav'")
-    expect(appSource).toContain('<FloatingNav />')
-    expect(appSource).toContain('<Scene onReady={() => setSceneReady(true)} />')
+    expect(appSource).toContain('<FloatingNav active={active}')
+    expect(appSource).toContain('<AboutWindow open={aboutOpen}')
+    expect(appSource).toContain('aboutOpen={aboutOpen}')
+    expect(appSource).toContain('onNameSelect={openAbout}')
+  })
+
+  test('wires About state through both entry points and keeps the canvas inert while open', () => {
+    expect(appSource).toContain("useState<NavItem>('home')")
+    expect(appSource).toContain('onSelect={handleNavSelect}')
+    expect(sceneSource).toContain('<NameText onSelect={onNameSelect} />')
+    expect(sceneSource).toContain("style={aboutOpen ? { pointerEvents: 'none' } : undefined}")
   })
 })

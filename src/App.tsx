@@ -1,5 +1,7 @@
 import { lazy, Suspense, useState } from 'react'
+import { AboutWindow } from './components/AboutWindow'
 import { FloatingNav } from './components/FloatingNav'
+import { NAV_ITEMS, type NavItem } from './components/floatingNavModel'
 import { SceneBoundary } from './components/SceneBoundary'
 
 const Scene = lazy(() =>
@@ -28,10 +30,28 @@ function PresentationShell({ ready }: { ready: boolean }) {
 
 export default function App() {
   const [sceneReady, setSceneReady] = useState(false)
+  const [active, setActive] = useState<NavItem>('home')
+  const [aboutOpen, setAboutOpen] = useState(false)
+
+  const openAbout = () => {
+    setActive('about')
+    setAboutOpen(true)
+  }
+
+  const handleNavSelect = (item: NavItem) => {
+    setActive(item)
+    setAboutOpen(item === 'about')
+  }
+
+  const closeAbout = () => {
+    setActive(NAV_ITEMS[0])
+    setAboutOpen(false)
+  }
 
   return (
-    <main className="experience">
-      <FloatingNav />
+    <main className="experience" data-about-open={aboutOpen || undefined}>
+      <FloatingNav active={active} onSelect={handleNavSelect} inert={aboutOpen} />
+      <AboutWindow open={aboutOpen} onClose={closeAbout} />
       <SceneBoundary>
         <Suspense fallback={<PresentationShell ready={false} />}>
           <PresentationShell ready={sceneReady} />
@@ -40,7 +60,11 @@ export default function App() {
               sceneReady ? 'scene-layer scene-layer--ready' : 'scene-layer'
             }
           >
-            <Scene onReady={() => setSceneReady(true)} />
+            <Scene
+              aboutOpen={aboutOpen}
+              onNameSelect={openAbout}
+              onReady={() => setSceneReady(true)}
+            />
           </div>
         </Suspense>
       </SceneBoundary>

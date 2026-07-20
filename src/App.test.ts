@@ -18,4 +18,10 @@ describe('hero manifesto overlay', () => {
     expect(manifestoSource).toContain("These are the projects I’m building to open them.")
     expect(manifestoSource).toContain('position={[0, 3.45, -6]}')
   })
+
+  test('mounts the floating navigation above the existing scene', () => {
+    expect(appSource).toContain("import { FloatingNav } from './components/FloatingNav'")
+    expect(appSource).toContain('<FloatingNav />')
+    expect(appSource).toContain('<Scene />')
+  })
 })

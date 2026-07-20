@@ -22,13 +22,14 @@ const homeZ =
     ? 11
     : getHomeCameraZ(window.innerWidth, window.innerHeight, homeFov)
 
-export function Scene() {
+export function Scene({ onReady }: { onReady: () => void }) {
   const [selected, setSelected] = useState<number | null>(null)
 
   return (
     <Canvas
       dpr={[1, 1.5]}
       camera={{ position: [0, 2.3, homeZ], fov: homeFov }}
+      onCreated={onReady}
       onPointerMissed={() => setSelected(null)}
     >
       <color attach="background" args={['#000000']} />

@@ -9,5 +9,7 @@ describe('About content', () => {
     expect(aboutContent.companies).toHaveLength(3)
     expect(aboutContent.projects).toHaveLength(3)
     expect(aboutContent.links.map((link) => link.label)).toEqual(['Email', 'GitHub', 'LinkedIn'])
+    expect(aboutContent.technologies.every((item) => item.mark)).toBe(true)
+    expect(aboutContent.companies.every((item) => item.mark)).toBe(true)
   })
 })

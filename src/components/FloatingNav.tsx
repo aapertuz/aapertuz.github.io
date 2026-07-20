@@ -44,7 +44,14 @@ export function FloatingNav({ active = 'home', onSelect = () => undefined, inert
     }))
   }
 
-  useEffect(() => setSelected(active), [active])
+  useEffect(() => {
+    if (active === selected) return
+    setSelected(active)
+    setEffect((current) => ({
+      cycle: current.cycle + 1,
+      particles: createGravityParticles(),
+    }))
+  }, [active, selected])
 
   return (
     <nav

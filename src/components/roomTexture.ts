@@ -1,5 +1,6 @@
 import { CanvasTexture, SRGBColorSpace } from 'three'
 import type { Project } from '../data/projects'
+import { techIcons } from '../data/techIcons'
 
 const WIDTH = 768
 const HEIGHT = 1344
@@ -7,27 +8,6 @@ const PAD_X = 92
 const TEXT_WIDTH = WIDTH - PAD_X * 2
 const TOOL_Y = 1124
 const ACTION_Y = 1182
-const pineconeIconUrl = 'data:image/svg+xml,%3Csvg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" stroke="%236D5DFB" stroke-width="1.8" stroke-linecap="round"%3E%3Ccircle cx="6" cy="7" r="2.5"/%3E%3Ccircle cx="18" cy="7" r="2.5"/%3E%3Ccircle cx="12" cy="18" r="2.5"/%3E%3Cpath d="m8 8.5 3 7M16 8.5l-3 7M8.5 7h7"/%3E%3C/g%3E%3C/svg%3E'
-
-const toolIconUrls: Record<string, string> = {
-  Go: 'https://cdn.simpleicons.org/go/00ADD8',
-  JavaScript: 'https://cdn.simpleicons.org/javascript/F7DF1E',
-  'Next.js': 'https://cdn.simpleicons.org/nextdotjs/F7F4EE',
-  'Node.js': 'https://cdn.simpleicons.org/nodedotjs/83CD29',
-  'React Native': 'https://cdn.simpleicons.org/react/61DAFB',
-  Python: 'https://cdn.simpleicons.org/python/FFD43B',
-  PostgreSQL: 'https://cdn.simpleicons.org/postgresql/4169E1',
-  Pinecone: pineconeIconUrl,
-  React: 'https://cdn.simpleicons.org/react/61DAFB',
-  Vite: 'https://cdn.simpleicons.org/vite/A78BFA',
-  MCP: 'https://cdn.simpleicons.org/modelcontextprotocol/F7EAD7',
-  FastAPI: 'https://cdn.simpleicons.org/fastapi/00E5D1',
-  Supabase: 'https://cdn.simpleicons.org/supabase/3ECF8E',
-  'WhatsApp Business API': 'https://cdn.simpleicons.org/whatsapp/25D366',
-  'Google Calendar API': 'https://cdn.simpleicons.org/googlecalendar/4285F4',
-  'Claude API': 'https://cdn.simpleicons.org/anthropic/D4A27F',
-  Redis: 'https://cdn.simpleicons.org/redis/FF4438',
-}
 
 function mulberry32(seed: number) {
   return () => {
@@ -99,7 +79,7 @@ function drawTools(
       context.drawImage(icon, x + inset, TOOL_Y - size / 2 + inset, size - inset * 2, size - inset * 2)
       texture.needsUpdate = true
     }
-    icon.src = toolIconUrls[tool]
+    icon.src = techIcons[tool]
   })
 }
 

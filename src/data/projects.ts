@@ -30,7 +30,7 @@ export const projects: Project[] = [
     description:
       'A memory layer for your AI coding assistant. It remembers the work already done, so you never pay to generate the same answer twice.',
     role: 'Builder',
-    tools: ['Go'], // confirm
+    tools: ['go'], // confirm
     link: '',
     room: {
       base: '#0a0a0a',
@@ -49,7 +49,7 @@ export const projects: Project[] = [
     description:
       'Finds gigs matched to your profile, scores each one honestly, and helps you apply. The hunt runs itself.',
     role: 'Builder',
-    tools: ['JavaScript', 'Next.js', 'Node.js'],
+    tools: ['javascript', 'nextjs', 'nodejs'],
     link: 'https://github.com/alexpertuz/gig-pilot',
     room: {
       base: '#1626c9',
@@ -68,7 +68,7 @@ export const projects: Project[] = [
     description:
       'Matches small groups of professionals by what they actually value. Know people worth knowing, without already knowing someone.',
     role: 'Cofounder, COO',
-    tools: ['React Native', 'Python', 'PostgreSQL', 'Pinecone'],
+    tools: ['react_native', 'python', 'postgresql', 'pinecone'],
     link: 'https://www.weftnow.com',
     room: {
       base: '#f26a0a',
@@ -87,7 +87,7 @@ export const projects: Project[] = [
     description:
       'Capital intelligence that scores signal, not pedigree. Your metrics become your last name.',
     role: 'Cofounder',
-    tools: ['Python', 'React', 'Vite', 'PostgreSQL', 'MCP'],
+    tools: ['python', 'react', 'vite', 'postgresql', 'mcp'],
     link: 'https://weascent.co',
     room: {
       base: '#12a657',
@@ -106,7 +106,7 @@ export const projects: Project[] = [
     description:
       'Everything Typeform does, for less. Plus onboarding that runs as an AI voice call or an AI chat.',
     role: 'Builder',
-    tools: ["Next.js", "JavaScript", "PostgreSQL"],
+    tools: ["nextjs", "javascript", "postgresql"],
     link: 'https://github.com/alexpertuz/ByteForm',
     room: {
       base: '#b62d3d',
@@ -125,7 +125,7 @@ export const projects: Project[] = [
     description:
       'An AI that books appointments on the WhatsApp number your clients already use. No app to learn, no bookings lost.',
     role: 'Builder',
-    tools: ['Python', 'FastAPI', 'Supabase', 'WhatsApp Business API', 'Google Calendar API', 'Claude API', 'Redis'],
+    tools: ['python', 'fastapi', 'supabase', 'whatsapp_business_api', 'google_calendar_api', 'claude_api', 'redis'],
     link: 'https://github.com/alexpertuz/agendamax',
     room: {
       base: '#7442c8',

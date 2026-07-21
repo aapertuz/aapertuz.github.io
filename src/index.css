@@ -377,12 +377,12 @@ canvas {
 }
 
 .about-window__logo-mark {
+  position: relative;
   display: grid;
   place-items: center;
   width: 56px;
   height: 56px;
-  color: rgb(255 255 255 / 62%);
-  transition: color 180ms ease, transform 180ms ease;
+  transition: transform 180ms ease;
 }
 
 .about-window__logo-grid--companies .about-window__logo-mark {
@@ -391,27 +391,47 @@ canvas {
 }
 
 .about-window__logo-mark:hover {
-  color: #f7f4ee;
   transform: translateY(-2px);
 }
 
-.about-window__logo-mark svg,
+.about-window__logo-mark::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-bottom: 10px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: #111113;
+  color: #f7f4ee;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 4px);
+  transition: opacity 180ms ease, transform 180ms ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.about-window__logo-mark:hover::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.about-window__logo-mark img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
 .about-window__contact-link svg {
   width: 32px;
   height: 32px;
 }
 
-.about-window__logo-grid--companies svg {
+.about-window__logo-grid--companies img {
   width: 40px;
   height: 40px;
-}
-
-.about-window__logo-mark svg {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }
 
 .about-window__projects ul { list-style: none; }

@@ -2,6 +2,7 @@ import { describe, expect, test } from 'bun:test'
 
 const doorSource = await Bun.file(new URL('./Door.tsx', import.meta.url)).text()
 const textureFile = Bun.file(new URL('./roomTexture.ts', import.meta.url))
+const techIconsFile = Bun.file(new URL('../data/techIcons.ts', import.meta.url))
 
 describe('Door visuals', () => {
   test('renders an open textured frame without a slab, handle, or labels', () => {
@@ -43,16 +44,19 @@ describe('Door visuals', () => {
     expect(source).toContain('function drawVisitAction')
     expect(source).toContain('project.tools')
     expect(source).toContain("project.link ? 'VISIT' : 'COMING SOON'")
-    expect(source).toContain('const toolIconUrls')
-    expect(source).toContain('const pineconeIconUrl')
-    expect(source).toContain('Pinecone: pineconeIconUrl')
+    expect(source).toContain("import { techIcons } from '../data/techIcons'")
     expect(source).toContain('new Image()')
     expect(source).not.toContain('/ffffff')
-    expect(source).toContain('stroke="%236D5DFB"')
     expect(source).toContain("context.fillStyle = 'rgba(17, 17, 19, 0.9)'")
-    expect(source).toContain("FastAPI: 'https://cdn.simpleicons.org/fastapi/00E5D1'")
-    expect(source).toContain("Supabase: 'https://cdn.simpleicons.org/supabase/3ECF8E'")
     expect(source).not.toContain("fillText('TOOLS'")
     expect(source).not.toContain('const toolMarks')
+
+    const iconsSource = await techIconsFile.text()
+    expect(iconsSource).toContain('export const techIcons')
+    expect(iconsSource).toContain('const pineconeIconUrl')
+    expect(iconsSource).toContain('pinecone: pineconeIconUrl')
+    expect(iconsSource).toContain('stroke="%236D5DFB"')
+    expect(iconsSource).toContain("fastapi: 'https://cdn.simpleicons.org/fastapi/00E5D1'")
+    expect(iconsSource).toContain("supabase: 'https://cdn.simpleicons.org/supabase/3ECF8E'")
   })
 })

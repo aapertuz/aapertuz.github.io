@@ -1,3 +1,5 @@
+import type { techIcons } from './techIcons'
+
 export interface AboutLink {
   label: string
   href: string
@@ -6,7 +8,7 @@ export interface AboutLink {
 
 export interface AboutLogo {
   label: string
-  mark: 'brackets' | 'cube' | 'orbit' | 'layers' | 'terminal' | 'node' | 'portal' | 'weave' | 'peak'
+  icon: keyof typeof techIcons
 }
 
 export interface AboutContent {
@@ -15,33 +17,26 @@ export interface AboutContent {
   role: string
   description: string
   technologies: AboutLogo[]
-  companies: AboutLogo[]
-  projects: Array<{ name: string; detail: string }>
+  companies: Array<{ name: string; detail: string }>
   links: AboutLink[]
 }
 
 export const aboutContent: AboutContent = {
   eyebrow: 'ABOUT / PROFILE',
-  name: 'Your Name',
-  role: 'Your Role · Your Discipline',
-  description: 'A short introduction about your work, interests, and approach.',
+  name: 'Antonio',
+  role: 'Head of Product · Software Engineer',
+  description: "I love every corner of products: design, architecture, engineering. With six years building, scaling, and helping tech companies ship their products across Latin America and the US, my mission is to drive innovation and disruption from the product layer out to impact real societies. Currently leading product at an AI telemedicine startup and building on the side.",
   technologies: [
-    { label: 'Technology 01', mark: 'brackets' },
-    { label: 'Technology 02', mark: 'cube' },
-    { label: 'Technology 03', mark: 'orbit' },
-    { label: 'Technology 04', mark: 'layers' },
-    { label: 'Technology 05', mark: 'terminal' },
-    { label: 'Technology 06', mark: 'node' },
+    { label: 'React Native', icon: 'react_native' },
+    { label: 'React.js', icon: 'react' },
+    { label: 'Python', icon: 'python' },
+    { label: 'Supabase', icon: 'supabase' },
+    { label: 'FastAPI', icon: 'fastapi' },
+    { label: 'Node.js', icon: 'nodejs' },
   ],
   companies: [
-    { label: 'Company 01', mark: 'portal' },
-    { label: 'Company 02', mark: 'weave' },
-    { label: 'Company 03', mark: 'peak' },
-  ],
-  projects: [
-    { name: 'Project 01', detail: 'A project descriptor goes here.' },
-    { name: 'Project 02', detail: 'A project descriptor goes here.' },
-    { name: 'Project 03', detail: 'A project descriptor goes here.' },
+    { name: 'easymd', detail: 'Head of Product at a telemedicine startup connecting patients with doctors across Latin America.' },
+    { name: 'Agendapro', detail: 'Senior Mobile Engineer and Product Lead at a scheduling platform for clinics, salons, and service businesses.' },
   ],
   links: [
     { label: 'Email', href: 'mailto:hello@example.com', icon: 'mail' },

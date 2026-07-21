@@ -25,7 +25,7 @@ export const projects: Project[] = [
     index: '01',
     status: 'BUILDING',
     industry: 'MEMORY',
-    title: 'Amirani',
+    title: 'Corvus',
     subheadline: 'Productivity and control over my work',
     description:
       'A memory layer for your AI coding assistant. It remembers the work already done, so you never pay to generate the same answer twice.',

@@ -13,7 +13,7 @@ describe('project rooms', () => {
 
   test('preserves the four reference projects and palette stops', () => {
     expect(projects.slice(0, 4).map(({ title }) => title)).toEqual([
-      'Amirani',
+      'Corvus',
       'GigPilot',
       'Weft',
       'Ascent',
@@ -31,7 +31,7 @@ describe('project rooms', () => {
   test('defines tool stacks and public destinations for project rooms', () => {
     expect(projects.every((project) => project.tools.length > 0)).toBe(true)
     expect(projects.filter((project) => project.link === '').map(({ title }) => title)).toEqual([
-      'Amirani',
+      'Corvus',
     ])
   })
 

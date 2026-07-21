@@ -39,8 +39,8 @@ export const aboutContent: AboutContent = {
     { name: 'Agendapro', detail: 'Senior Mobile Engineer and Product Lead at a scheduling platform for clinics, salons, and service businesses.' },
   ],
   links: [
-    { label: 'Email', href: 'mailto:hello@example.com', icon: 'mail' },
-    { label: 'GitHub', href: 'https://example.com/github', icon: 'github' },
-    { label: 'LinkedIn', href: 'https://example.com/linkedin', icon: 'linkedin' },
+    { label: 'Email', href: 'mailto:antonio.pertuz99@gmail.com', icon: 'mail' },
+    { label: 'GitHub', href: 'https://github.com/alexpertuz', icon: 'github' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/apertuz', icon: 'linkedin' },
   ],
 }

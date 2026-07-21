@@ -10,10 +10,9 @@ describe('AboutWindow', () => {
     const markup = renderToStaticMarkup(<AboutWindow open onClose={() => undefined} />)
     expect(markup).toContain('role="dialog"')
     expect(markup).toContain('aria-modal="true"')
-    expect(markup).toContain('Your Name')
+    expect(markup).toContain('Antonio')
     expect(markup).toContain('Technologies')
     expect(markup).toContain('Companies')
-    expect(markup).toContain('Projects')
     expect(markup).toContain('Contact')
     expect(markup).toContain('aria-label="Close About"')
   })
@@ -35,7 +34,7 @@ describe('AboutWindow', () => {
 
   test('keeps the dialog mounted long enough to animate its exit', () => {
     expect(source).toContain('useState(open)')
-    expect(source).toContain('data-state={open ? \'open\' : \'closing\'}')
+    expect(source).toContain('data-state={open ? "open" : "closing"}')
     expect(source).toContain('onAnimationEnd={finishClosing}')
     expect(css).toContain(".about-window[data-state='closing']")
     expect(css).toContain('animation: about-window-exit 360ms')

@@ -359,7 +359,7 @@ function drawCopy(context: CanvasRenderingContext2D, project: Project) {
   context.fillStyle = project.room.text
   context.font = '500 27px ui-monospace, SFMono-Regular, Menlo, monospace'
   context.fillText(
-    `${project.index} · ${project.discipline} · ${project.status}`,
+    `${project.index} · ${project.industry} · ${project.status}`,
     PAD_X,
     360,
   )
@@ -375,8 +375,7 @@ function drawCopy(context: CanvasRenderingContext2D, project: Project) {
     context.fillText(line, PAD_X, 570 + index * 58)
   })
 
-  context.font = '500 27px ui-monospace, SFMono-Regular, Menlo, monospace'
-  context.fillText(project.role.toUpperCase(), PAD_X, 1030)
+  
 }
 
 export function createRoomTexture(project: Project): CanvasTexture | null {

@@ -114,8 +114,7 @@ function drawCopy(context: CanvasRenderingContext2D, project: Project, texture: 
     context.fillText(line, PAD_X, 570 + index * 58)
   })
 
-  context.font = '500 27px ui-monospace, SFMono-Regular, Menlo, monospace'
-  context.fillText(project.role.toUpperCase(), PAD_X, 1030)
+
 
   drawTools(context, project, texture)
   drawVisitAction(context, project)

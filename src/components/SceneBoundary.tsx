@@ -17,9 +17,7 @@ export class SceneBoundary extends Component<{ children: ReactNode }, State> {
     if (!this.state.failed) return this.props.children
     return (
       <main className="fallback">
-        <h1>
-          <span>I'm</span> Lex Pertuz
-        </h1>
+        <h1>Lex Pertuz</h1>
         <ul>
           {projects.map((p) => (
             <li key={p.title}>

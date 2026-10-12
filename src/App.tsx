@@ -13,6 +13,7 @@ const Scene = lazy(() =>
 function PresentationShell({ ready }: { ready: boolean }) {
   return (
     <header
+      aria-hidden={ready || undefined}
       className={
         ready
           ? 'presentation-shell presentation-shell--ready'

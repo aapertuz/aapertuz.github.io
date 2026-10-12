@@ -34,7 +34,6 @@ describe('hero and About integration', () => {
     expect(manifestoSource).toContain("from '@react-three/drei'")
     expect(manifestoSource).toContain('Some problems have felt like closed doors.')
     expect(manifestoSource).toContain("These are the projects I’m building to open them.")
-    expect(manifestoSource).toContain('position={[0, 3.45, -6]}')
   })
 
   test('keeps controlled navigation and the About window above the lazy scene', () => {

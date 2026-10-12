@@ -3,10 +3,12 @@ import { Text } from '@react-three/drei'
 export function HeroManifesto() {
   return (
     <Text
-      position={[0, 3.45, -6]}
+      layers-mask={1}
+      position={[0, 1.25, -13]}
+      font="/fonts/inter-medium.woff"
       anchorX="center"
       anchorY="middle"
-      color="rgba(255, 255, 255, 0.6)"
+      color="#b8b7b4"
       fontSize={0.28}
       lineHeight={1.4}
       maxWidth={7.4}

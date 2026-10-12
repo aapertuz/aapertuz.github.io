@@ -74,15 +74,14 @@ Liquid glass is the signature interactive material. Build it from several restra
 
 Glass must remain readable without `backdrop-filter`. Provide a Raised Charcoal fallback around 92% opacity. Do not combine glass with a neon glow, thick outline, or multiple colored gradients.
 
-### 4.2 Reflective dark surface
+### 4.2 Solid corridor floor
 
-Use for floors, large showcases, media wells, and premium display panels.
+The home corridor uses rough, dark stone with fine grain and restrained joints.
 
-- Base: Deep Stage or Raised Charcoal.
-- Reflection is blurred, vertically faded, and dimmer than its source.
-- Suggested blur: 16–40px in DOM UI; larger only in 3D rendering.
-- Reflection opacity: 8–24%.
-- Reflection must reinforce depth, never mirror text strongly enough to reduce legibility.
+- High roughness and very low metalness keep the floor solid.
+- Doorways cast short, soft pools of colored light.
+- Do not mirror doorway artwork or typography on the floor.
+- Recessed portal worlds, substantial frames, side walls, and ceiling ribs establish depth.
 
 ### 4.3 Warm active material
 
@@ -90,7 +89,7 @@ Use Selector Ivory for the solid active state. Text on it uses `#16120D` or Ambe
 
 ### 4.4 Project chroma
 
-Saturated project colors live inside framed content: room panels, thumbnails, media, charts, or a single isolated accent plane. Surround them with neutral UI. Do not turn project colors into page-wide gradients or glowing button systems.
+Saturated project colors live inside framed content: recessed portal worlds, thumbnails, media, or charts. Surround them with neutral UI. Do not turn project colors into page-wide gradients or glowing button systems.
 
 ## 5. Shapes and Corner Language
 

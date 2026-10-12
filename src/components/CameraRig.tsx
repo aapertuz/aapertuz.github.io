@@ -20,15 +20,23 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
   const look = useRef(HOME_LOOK.clone())
   const reducedMotion = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, [])
 
-  useFrame((state, delta) => {
+  const focusPose = useMemo(() => {
+    if (!focus) return null
+    const normal = new Vector3(Math.sin(focus.rotationY), 0, Math.cos(focus.rotationY))
+    const threshold = new Vector3(focus.position[0], focus.position[1] + (FRAME_HEIGHT - FRAME_THICKNESS) / 2, focus.position[2]).addScaledVector(normal, -0.16)
+    return { normal, threshold, inward: normal.clone().negate() }
+  }, [focus])
+
+  useFrame((state, frameDelta) => {
+    // A resumed tab must not jump through a journey or its damping animation.
+    const delta = Math.min(frameDelta, 0.05)
     if ('fov' in state.camera && state.camera.fov !== (narrow ? 52 : 40)) {
       state.camera.fov = narrow ? 52 : 40
       state.camera.updateProjectionMatrix()
       state.invalidate()
     }
-    if (focus) {
-      const normal = new Vector3(Math.sin(focus.rotationY), 0, Math.cos(focus.rotationY))
-      const threshold = new Vector3(focus.position[0], focus.position[1] + (FRAME_HEIGHT - FRAME_THICKNESS) / 2, focus.position[2]).addScaledVector(normal, -0.16)
+    if (focus && focusPose) {
+      const { normal, threshold, inward } = focusPose
       if (journey.current?.focus !== focus) {
         journey.current = {
           focus, elapsed: 0, rotation: state.camera.quaternion.clone(),
@@ -50,7 +58,7 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
       // Track the opening until the portal fills the view, then face into the room.
       const interior = Math.max(0, Math.min(1, (1.6 - distance) / 1.5))
       targetLook.subVectors(threshold, targetPos).normalize()
-        .lerp(normal.clone().negate(), interior * interior * (3 - 2 * interior)).normalize()
+        .lerp(inward, interior * interior * (3 - 2 * interior)).normalize()
         .add(targetPos)
       aimMatrix.lookAt(targetPos, targetLook, state.camera.up)
       targetRotation.setFromRotationMatrix(aimMatrix)

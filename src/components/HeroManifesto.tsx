@@ -6,6 +6,7 @@ export function HeroManifesto() {
       layers-mask={1}
       position={[0, 1.25, -13]}
       font="/fonts/inter-medium.woff"
+      characters={'Some problems have felt like closed doors.\nThese are the projects I’m building to open them.'}
       anchorX="center"
       anchorY="middle"
       color="#b8b7b4"

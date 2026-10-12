@@ -21,6 +21,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
+      - name: Check artwork budget and startup loading
+        run: bun test src/performance.test.ts src/buildChunking.test.ts src/App.test.ts
       - run: bun run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

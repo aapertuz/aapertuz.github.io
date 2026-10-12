@@ -4,6 +4,14 @@ export interface RoomPalette {
   text: string
   nameText: string
   light: string
+  frame: string
+  spill: {
+    opacity: number
+    width: number
+    length: number
+    falloff: number
+    lightIntensity: number
+  }
 }
 
 export interface Project {
@@ -20,12 +28,14 @@ export interface Project {
   link: string
 }
 
-export const projects: Project[] = [
+const doorOrder = ['Weft', 'Polar', 'easymd', 'GigPilot', 'Ascent', 'ByteForm']
+
+export const projects: Project[] = ([
   {
-    index: '01',
+    index: '02',
     status: 'BUILDING',
     industry: 'MEMORY',
-    title: 'Corvus',
+    title: 'Polar',
     subheadline: 'Productivity and control over my work',
     description:
       'A memory layer for your AI coding assistant. It remembers the work already done, so you never pay to generate the same answer twice.',
@@ -33,15 +43,17 @@ export const projects: Project[] = [
     tools: ['go'], // confirm
     link: '',
     room: {
-      base: '#0a0a0a',
-      gradient: ['#1c1c1c', '#0e0e0e', '#00000000'],
-      text: '#b4b4b4',
-      nameText: '#ffffff',
-      light: '#7d7d7d',
+      base: '#310910',
+      gradient: ['#ed3528', '#8d1018', '#25070d'],
+      text: '#ffd1cd',
+      nameText: '#fff5f3',
+      light: '#ff382d',
+      frame: '#3a1115',
+      spill: { opacity: 0.56, width: 1.45, length: 5.2, falloff: 1.05, lightIntensity: 8 },
     },
   },
   {
-    index: '02',
+    index: '04',
     status: 'SHIPPING',
     industry: 'WORK',
     title: 'GigPilot',
@@ -52,15 +64,17 @@ export const projects: Project[] = [
     tools: ['javascript', 'nextjs', 'nodejs'],
     link: 'https://github.com/alexpertuz/gig-pilot',
     room: {
-      base: '#1626c9',
-      gradient: ['#2036e6', '#1626c9', '#0d1a99'],
-      text: '#cdd3ff',
+      base: '#17191c',
+      gradient: ['#d7dbe0', '#60666e', '#1b1e22'],
+      text: '#e1e4e7',
       nameText: '#ffffff',
-      light: '#6f82ff',
+      light: '#bdc4cb',
+      frame: '#34393f',
+      spill: { opacity: 0.58, width: 1.6, length: 5.8, falloff: 0.92, lightIntensity: 10 },
     },
   },
   {
-    index: '03',
+    index: '01',
     status: 'SHIPPING',
     industry: 'SOCIAL',
     title: 'Weft',
@@ -75,11 +89,13 @@ export const projects: Project[] = [
       gradient: ['#ff9a3d', '#f26a0a', '#b34700'],
       text: '#ffe4cc',
       nameText: '#ffffff',
-      light: '#ffae67',
+      light: '#ff9a35',
+      frame: '#54250b',
+      spill: { opacity: 0.56, width: 1.5, length: 5.5, falloff: 1.0, lightIntensity: 8 },
     },
   },
   {
-    index: '04',
+    index: '05',
     status: 'CLIMBING',
     industry: 'FINTECH',
     title: 'Ascent',
@@ -94,11 +110,13 @@ export const projects: Project[] = [
       gradient: ['#35d17c', '#12a657', '#0a7a3d'],
       text: '#d6ffe7',
       nameText: '#ffffff',
-      light: '#6bea9d',
+      light: '#35d878',
+      frame: '#123b2c',
+      spill: { opacity: 0.54, width: 1.45, length: 5.3, falloff: 1.08, lightIntensity: 8 },
     },
   },
   {
-    index: '05',
+    index: '06',
     status: 'LIVE',
     industry: 'SAAS',
     title: 'ByteForm',
@@ -109,18 +127,20 @@ export const projects: Project[] = [
     tools: ["nextjs", "javascript", "postgresql"],
     link: 'https://github.com/alexpertuz/ByteForm',
     room: {
-      base: '#b62d3d',
-      gradient: ['#e05a64', '#b62d3d', '#681721'],
-      text: '#ffdce0',
+      base: '#2a103d',
+      gradient: ['#bf66f4', '#7b29b0', '#32104a'],
+      text: '#efd9ff',
       nameText: '#ffffff',
-      light: '#ff929a',
+      light: '#c574f2',
+      frame: '#39184e',
+      spill: { opacity: 0.55, width: 1.4, length: 5.1, falloff: 1.12, lightIntensity: 8 },
     },
   },
   {
-    index: '06',
+    index: '03',
     status: 'SHIPPING',
     industry: 'FINTECH',
-    title: 'Agendamax',
+    title: 'easymd',
     subheadline: 'Every message answered, every slot filled',
     description:
       'An AI that books appointments on the WhatsApp number your clients already use. No app to learn, no bookings lost.',
@@ -128,11 +148,13 @@ export const projects: Project[] = [
     tools: ['python', 'fastapi', 'supabase', 'whatsapp_business_api', 'google_calendar_api', 'claude_api', 'redis'],
     link: 'https://github.com/alexpertuz/agendamax',
     room: {
-      base: '#7442c8',
-      gradient: ['#a978f2', '#7442c8', '#432477'],
-      text: '#eadfff',
-      nameText: '#ffffff',
-      light: '#c7a4ff',
+      base: '#082a4f',
+      gradient: ['#49a6ff', '#176bc5', '#092241'],
+      text: '#d4e9ff',
+      nameText: '#f5fbff',
+      light: '#53a9ff',
+      frame: '#153755',
+      spill: { opacity: 0.56, width: 1.45, length: 5.2, falloff: 1.06, lightIntensity: 8 },
     },
   },
-]
+] satisfies Project[]).sort((a, b) => doorOrder.indexOf(a.title) - doorOrder.indexOf(b.title))

@@ -35,7 +35,7 @@ export const aboutContent: AboutContent = {
     { label: 'Node.js', icon: 'nodejs' },
   ],
   companies: [
-    { name: 'easymd', detail: 'Head of Product at a telemedicine startup connecting patients with doctors across Latin America.' },
+    { name: 'EasyMD', detail: 'Head of Product at a telemedicine startup connecting patients with doctors across Latin America.' },
     { name: 'Agendapro', detail: 'Senior Mobile Engineer and Product Lead at a scheduling platform for clinics, salons, and service businesses.' },
   ],
   links: [

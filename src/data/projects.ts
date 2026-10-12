@@ -28,13 +28,13 @@ export interface Project {
   link: string
 }
 
-const doorOrder = ['Weft', 'Polar', 'easymd', 'GigPilot', 'Ascent', 'ByteForm']
+const doorOrder = ['Weft', 'Polar', 'EasyMD', 'GigPilot', 'Ascent', 'ByteForm']
 
 export const projects: Project[] = ([
   {
     index: '02',
     status: 'BUILDING',
-    industry: 'MEMORY',
+    industry: 'WORK OS',
     title: 'Polar',
     subheadline: 'Productivity and control over my work',
     description:
@@ -55,7 +55,7 @@ export const projects: Project[] = ([
   {
     index: '04',
     status: 'SHIPPING',
-    industry: 'WORK',
+    industry: 'AI Freelancing',
     title: 'GigPilot',
     subheadline: 'The right work, found for me',
     description:
@@ -139,8 +139,8 @@ export const projects: Project[] = ([
   {
     index: '03',
     status: 'SHIPPING',
-    industry: 'FINTECH',
-    title: 'easymd',
+    industry: 'HEALTH',
+    title: 'EasyMD',
     subheadline: 'Every message answered, every slot filled',
     description:
       'An AI that books appointments on the WhatsApp number your clients already use. No app to learn, no bookings lost.',

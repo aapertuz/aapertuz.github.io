@@ -15,7 +15,7 @@ describe('project rooms', () => {
     expect(projects.map(({ title }) => title)).toEqual([
       'Weft',
       'Polar',
-      'easymd',
+      'EasyMD',
       'GigPilot',
       'Ascent',
       'ByteForm',
@@ -36,11 +36,11 @@ describe('project rooms', () => {
     ])
   })
 
-  test('uses violet ByteForm and blue easymd palettes', () => {
+  test('uses violet ByteForm and blue EasyMD palettes', () => {
     expect(projects[5].title).toBe('ByteForm')
     expect(projects[5].status).toBe('LIVE')
     expect(projects[5].room.gradient).toEqual(['#bf66f4', '#7b29b0', '#32104a'])
-    expect(projects[2].title).toBe('easymd')
+    expect(projects[2].title).toBe('EasyMD')
     expect(projects[2].status).toBe('SHIPPING')
     expect(projects[2].room.gradient).toEqual(['#49a6ff', '#176bc5', '#092241'])
   })

@@ -1,8 +1,9 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { AboutWindow } from './components/AboutWindow'
 import { FloatingNav } from './components/FloatingNav'
 import { NAV_ITEMS, type NavItem } from './components/floatingNavModel'
 import { SceneBoundary } from './components/SceneBoundary'
+import { INTRO_DURATION_MS } from './scene/entrance'
 
 const Scene = lazy(() =>
   import('./components/Scene').then(({ Scene: SceneComponent }) => ({
@@ -31,6 +32,13 @@ function PresentationShell({ ready }: { ready: boolean }) {
 
 export default function App() {
   const [sceneReady, setSceneReady] = useState(false)
+  const [introDone, setIntroDone] = useState(false)
+  useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timer = window.setTimeout(() => setIntroDone(true), reduced ? 0 : INTRO_DURATION_MS)
+    return () => window.clearTimeout(timer)
+  }, [])
+  const sceneShown = sceneReady && introDone
   const [active, setActive] = useState<NavItem>('home')
   const [aboutOpen, setAboutOpen] = useState(false)
 
@@ -55,13 +63,14 @@ export default function App() {
       <AboutWindow open={aboutOpen} onClose={closeAbout} />
       <SceneBoundary>
         <Suspense fallback={<PresentationShell ready={false} />}>
-          <PresentationShell ready={sceneReady} />
+          <PresentationShell ready={sceneShown} />
           <div
             className={
-              sceneReady ? 'scene-layer scene-layer--ready' : 'scene-layer'
+              sceneShown ? 'scene-layer scene-layer--ready' : 'scene-layer'
             }
           >
             <Scene
+              revealing={sceneShown}
               aboutOpen={aboutOpen}
               onNameSelect={openAbout}
               onReady={() => setSceneReady(true)}

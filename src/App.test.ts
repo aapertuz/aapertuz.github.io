@@ -14,12 +14,13 @@ describe('progressive WebGL loading', () => {
     expect(appSource).toContain("These are the projects I’m building to open them.")
   })
 
-  test('reveals the scene only after Canvas reports WebGL initialization', () => {
+  test('reveals the corridor independently of artwork after the brief introduction', () => {
     expect(appSource).toContain('const [sceneReady, setSceneReady] = useState(false)')
     expect(appSource).toContain('onReady={() => setSceneReady(true)}')
-    expect(appSource).toContain("sceneReady ? 'scene-layer scene-layer--ready' : 'scene-layer'")
+    expect(appSource).toContain("sceneShown ? 'scene-layer scene-layer--ready' : 'scene-layer'")
     expect(sceneSource).toContain('onReady: () => void')
-    expect(sceneSource).toContain('onCreated={onReady}')
+    expect(sceneSource).not.toContain('onCreated={onReady}')
+    expect(sceneSource).toContain('<SceneReady onReady={onReady} />')
   })
 })
 

@@ -45,7 +45,7 @@ export function Floor({ placements, reveals }: { placements: DoorPlacement[]; re
         float endFade = 1.0-smoothstep(spillShape[i].y*0.65,spillShape[i].y,distanceOut);
         float behind = smoothstep(-0.35,0.02,forward);
         float contact = exp(-distanceOut*8.0) * exp(-pow(abs(across)/0.8,8.0));
-        totalEmissiveRadiance += spillColors[i] * (lateral*reach*endFade*0.48 + contact*0.6) * behind * grain * variation * spillReveals[i];
+        totalEmissiveRadiance += spillColors[i] * (lateral*reach*endFade*0.8 + contact*1.0) * behind * grain * variation * spillReveals[i];
 
       }
     `).replace('#include <opaque_fragment>', `

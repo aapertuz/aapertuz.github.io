@@ -5,6 +5,7 @@ import { CubicBezierCurve3, Matrix4, Quaternion, Vector3 } from 'three'
 import { FRAME_HEIGHT, FRAME_THICKNESS } from './frameGeometry'
 import { getHomeCameraZ } from '../scene/cameraFraming'
 import type { DoorPlacement } from '../scene/layout'
+import { advanceReturnJourney, createReturnJourney } from '../scene/returnJourney'
 
 const HOME_POS = new Vector3(0, 1.65, 14.5)
 const HOME_LOOK = new Vector3(0, 1.65, -6)
@@ -14,8 +15,9 @@ const targetLook = new Vector3()
 const aimMatrix = new Matrix4()
 const targetRotation = new Quaternion()
 
-export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement | null; narrow: boolean; onSettled?: (focus: DoorPlacement) => void }) {
+export function CameraRig({ focus, narrow, onSettled, onReturned }: { focus: DoorPlacement | null; narrow: boolean; onSettled?: (focus: DoorPlacement) => void; onReturned?: () => void }) {
   const journey = useRef<{ focus: DoorPlacement; path: CubicBezierCurve3; rotation: Quaternion; elapsed: number } | null>(null)
+  const returning = useRef<ReturnType<typeof createReturnJourney> | null>(null)
   const settled = useRef<DoorPlacement | null>(null)
   const look = useRef(HOME_LOOK.clone())
   const reducedMotion = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, [])
@@ -36,6 +38,7 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
       state.invalidate()
     }
     if (focus && focusPose) {
+      returning.current = null
       const { normal, threshold, inward } = focusPose
       if (journey.current?.focus !== focus) {
         journey.current = {
@@ -65,6 +68,9 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
       const turn = Math.min(journey.current.elapsed / 0.55, 1)
       state.camera.quaternion.slerpQuaternions(journey.current.rotation, targetRotation, reducedMotion ? 1 : turn * turn * (3 - 2 * turn))
     } else {
+      if (journey.current) {
+        returning.current = createReturnJourney(journey.current.path, journey.current.elapsed, state.camera.quaternion)
+      }
       journey.current = null
       const fov = 'fov' in state.camera && typeof state.camera.fov === 'number' ? state.camera.fov : 40
       const homeZ = getHomeCameraZ(state.size.width, state.size.height, fov)
@@ -72,7 +78,18 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
       targetLook.copy(HOME_LOOK)
       if (narrow) targetLook.y = 2.5
     }
-    if (reducedMotion) {
+    if (!focus && returning.current) {
+      aimMatrix.lookAt(targetPos, targetLook, state.camera.up)
+      targetRotation.setFromRotationMatrix(aimMatrix)
+      const complete = advanceReturnJourney(returning.current, delta, targetRotation, state.camera.position, state.camera.quaternion, reducedMotion)
+      // Keep the look target consistent with the actual orientation so the
+      // home damping cannot snap the camera after the journey finishes.
+      look.current.copy(targetLook)
+      if (complete) {
+        returning.current = null
+        onReturned?.()
+      }
+    } else if (reducedMotion) {
       state.camera.position.copy(targetPos)
       look.current.copy(targetLook)
     } else {
@@ -81,13 +98,14 @@ export function CameraRig({ focus, narrow, onSettled }: { focus: DoorPlacement |
       if (focus) look.current.copy(targetLook)
       else easing.damp3(look.current, targetLook, 0.45, delta)
     }
-    if (!focus) state.camera.lookAt(look.current)
+    if (!focus && !returning.current) state.camera.lookAt(look.current)
     if (!focus) settled.current = null
     else if (settled.current !== focus && (reducedMotion || (journey.current?.elapsed ?? 0) >= 2.6) && state.camera.position.distanceToSquared(targetPos) < 0.0004 && look.current.distanceToSquared(targetLook) < 0.0004) {
       settled.current = focus
       onSettled?.(focus)
     }
-  })
+    state.camera.updateMatrixWorld()
+  }, -3)
 
   return null
 }

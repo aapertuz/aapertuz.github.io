@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import type { Project } from '../data/projects'
 import { techIcons } from '../data/techIcons'
 
-export function ProjectDetails({ project, onClose }: { project: Project; onClose: () => void }) {
+export function ProjectDetails({ project, onClose, closing = false }: { project: Project; onClose: () => void; closing?: boolean }) {
   const panel = useRef<HTMLElement>(null)
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null
@@ -12,7 +12,7 @@ export function ProjectDetails({ project, onClose }: { project: Project; onClose
     return () => { window.removeEventListener('keydown', escape); previous?.focus({ preventScroll: true }) }
   }, [onClose])
   return (
-    <section ref={panel} tabIndex={-1} className="project-details" aria-labelledby="project-title">
+    <section ref={panel} tabIndex={-1} className="project-details" data-closing={closing || undefined} inert={closing} aria-labelledby="project-title">
       <aside className="project-details__sidebar">
         <button className="project-details__back" onClick={onClose}>← Back to corridor</button>
         <div><p className="project-details__identity">{project.title}</p><p className="project-details__meta">{project.industry}</p></div>

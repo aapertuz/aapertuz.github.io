@@ -43,11 +43,12 @@ interface SceneProps {
   onReady: () => void
 }
 
-function Doorways({ placements, reveals, revealing, selected, labelsVisible, onSelect }: {
+function Doorways({ placements, reveals, revealing, selected, returning, labelsVisible, onSelect }: {
   placements: ReturnType<typeof layoutDoors>
   reveals: DoorReveal[]
   revealing: boolean
   selected: number | null
+  returning: number | null
   labelsVisible: boolean
   onSelect: (index: number) => void
 }) {
@@ -55,13 +56,13 @@ function Doorways({ placements, reveals, revealing, selected, labelsVisible, onS
   return placements.map((placement, index) => (
     <Door key={placement.project.title} placement={placement} environment={environment}
       revealing={revealing} reveal={reveals[index]} entranceOrder={index}
-      selected={selected === index} labelsVisible={labelsVisible}
+      selected={selected === index} returning={returning === index} labelsVisible={labelsVisible}
       onSelect={() => onSelect(index)} />
   ))
 }
 
 export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProps) {
-  const [dpr, setDpr] = useState(() => Math.min(window.devicePixelRatio, 1.5))
+  const [dpr, setDpr] = useState(() => Math.min(window.devicePixelRatio, 2))
   const [pageVisible, setPageVisible] = useState(() => !document.hidden)
   useEffect(() => {
     const update = () => setPageVisible(!document.hidden)
@@ -79,22 +80,29 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
   const placements = useMemo(() => layoutDoors(projects, narrow), [narrow])
   const reveals = useMemo(() => placements.map(() => ({ current: 0 })), [placements])
   const [selected, setSelected] = useState<number | null>(null)
+  const [returning, setReturning] = useState<number | null>(null)
 
   const [settledProject, setSettledProject] = useState<ReturnType<typeof layoutDoors>[number] | null>(null)
   const selectProject = useCallback((index: number) => {
-    if (index === selected) return
+    if (index === selected || returning !== null) return
     setSettledProject(null)
     setSelected(index)
-  }, [selected])
+  }, [selected, returning])
 
   const closeProject = useCallback(() => {
-    const projectIndex = selected === null ? null : placements[selected].project.index
-    setSettledProject(null)
+    if (selected === null) return
+    setReturning(selected)
     setSelected(null)
+  }, [selected])
+
+  const finishReturn = useCallback(() => {
+    const projectIndex = returning === null ? null : placements[returning].project.index
+    setReturning(null)
+    setSettledProject(null)
     requestAnimationFrame(() => {
       document.querySelector<HTMLButtonElement>(`[data-project-index="${projectIndex}"]`)?.focus({ preventScroll: true })
     })
-  }, [selected, placements])
+  }, [returning, placements])
 
   useEffect(() => {
     if (selected === null) return
@@ -114,10 +122,8 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
     >
       <PerformanceMonitor
         bounds={() => [45, 58]}
-        flipflops={3}
-        onDecline={() => setDpr(1)}
-        onIncline={() => setDpr(Math.min(window.devicePixelRatio, 1.5))}
-        onFallback={() => setDpr(1)}
+        onDecline={() => setDpr(current => Math.max(1, current - 0.25))}
+        onIncline={() => setDpr(current => Math.min(window.devicePixelRatio, 2, current + 0.25))}
       />
       <color attach="background" args={['#050505']} />
       <fog attach="fog" args={['#050505', 20, 52]} />
@@ -131,21 +137,21 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
         <Suspense fallback={null}><NameText onSelect={onNameSelect} /></Suspense>
       </>}
       <Suspense fallback={null}>
-        <Doorways placements={placements} reveals={reveals} revealing={revealing} selected={selected} labelsVisible={settledProject === null && !narrow} onSelect={selectProject} />
+        <Doorways placements={placements} reveals={reveals} revealing={revealing} selected={selected} returning={returning} labelsVisible={settledProject === null && returning === null && !narrow} onSelect={selectProject} />
       </Suspense>
       <SceneReady onReady={onReady} />
-      <CameraRig onSettled={setSettledProject} narrow={narrow} focus={selected === null ? null : placements[selected]} />
+      <CameraRig onSettled={setSettledProject} onReturned={finishReturn} narrow={narrow} focus={selected === null ? null : placements[selected]} />
     </Canvas>
-    {narrow && settledProject === null && !aboutOpen && <>
+    {narrow && settledProject === null && returning === null && !aboutOpen && <>
       <header className="scene-mobile-intro">
         <button onClick={onNameSelect}>Alexis Pertuz</button>
         <p>Some problems have felt like closed doors.<br />These are the projects I’m building to open them.</p>
       </header>
       <nav className="mobile-projects" aria-label="Explore projects">
-        {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span>{project.index}</span>{project.title}<span aria-hidden="true">↗</span></button>)}
+        {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span className="mobile-projects__identity"><strong>{project.title}</strong><span>{project.industry}</span></span><span aria-hidden="true">↗</span></button>)}
       </nav>
     </>}
-    {selected !== null && settledProject === placements[selected] && !aboutOpen && <ProjectDetails project={placements[selected].project} onClose={closeProject} />}
+    {settledProject !== null && !aboutOpen && <ProjectDetails project={settledProject.project} closing={returning !== null} onClose={closeProject} />}
     </>
   )
 }

@@ -1,8 +1,8 @@
 import { Html, MeshPortalMaterial, useCursor } from '@react-three/drei'
 import { useFrame, type ThreeEvent } from '@react-three/fiber'
 import { easing } from 'maath'
-import { Suspense, useEffect, useMemo, useRef, useState, type ComponentRef } from 'react'
-import { Color, type Group, type MeshStandardMaterial, type PointLight, type Texture } from 'three'
+import { Suspense, useEffect, useMemo, useRef, useState, type ComponentRef, type CSSProperties } from 'react'
+import { Color, type MeshStandardMaterial, type PointLight, type Texture } from 'three'
 import type { DoorPlacement } from '../scene/layout'
 import { DARK_FRAME_HOLD, DOOR_STAGGER, revealProgress, type DoorReveal } from '../scene/entrance'
 import { PortalWorld } from './PortalWorld'
@@ -20,11 +20,12 @@ interface DoorProps {
   environment: Texture
   placement: DoorPlacement
   selected: boolean
+  returning: boolean
   labelsVisible: boolean
   onSelect: () => void
 }
 
-export function Door({ revealing, reveal, entranceOrder, placement, environment, selected, labelsVisible, onSelect }: DoorProps) {
+export function Door({ revealing, reveal, entranceOrder, placement, environment, selected, returning, labelsVisible, onSelect }: DoorProps) {
   const [hovered, setHovered] = useState(false)
   useCursor(hovered)
   const geometry = useMemo(createFrameGeometry, [])
@@ -34,7 +35,6 @@ export function Door({ revealing, reveal, entranceOrder, placement, environment,
   const doorGlow = useMemo(() => ({ value: 0 }), [])
   const light = useRef<PointLight>(null)
   const portal = useRef<ComponentRef<typeof MeshPortalMaterial>>(null)
-  const world = useRef<Group>(null)
   // Illuminate the existing metal itself, without extra bars over the opening.
   const illuminateFrame = useMemo(() => (shader: Parameters<MeshStandardMaterial['onBeforeCompile']>[0]) => {
     shader.uniforms.doorGlow = doorGlow
@@ -57,7 +57,7 @@ export function Door({ revealing, reveal, entranceOrder, placement, environment,
         float edgeLight = exp(-abs(framePosition.z + 0.14) * 22.0);
         float inward = max(-frameNormal.x * sign(framePosition.x), 0.0)
           + max(-frameNormal.y, 0.0) * smoothstep(4.1, 4.28, framePosition.y);
-        totalEmissiveRadiance += doorColor * edgeLight * inward * 0.7 * doorGlow;
+        totalEmissiveRadiance += doorColor * edgeLight * inward * 1.2 * doorGlow;
       `)
   }, [placement.project.room.light, doorGlow])
   useFrame(({ camera }, frameDelta) => {
@@ -65,19 +65,14 @@ export function Door({ revealing, reveal, entranceOrder, placement, environment,
     if (revealing) elapsed.current += delta
     reveal.current = revealing ? (reducedMotion || selected ? 1 : revealProgress(elapsed.current, DARK_FRAME_HOLD + entranceOrder * DOOR_STAGGER, 1.25)) : 0
     doorGlow.value = reveal.current
-    // Keep the backdrop facing the moving camera throughout the approach.
-    if (world.current) {
-      const angle = selected ? 0 : Math.atan2(camera.position.x - placement.position[0], camera.position.z - placement.position[2]) - placement.rotationY
-      easing.damp(world.current.rotation, 'y', angle, 0.3, delta)
-    }
     if (portal.current) {
       const distance = (camera.position.x - placement.position[0]) * Math.sin(placement.rotationY)
         + (camera.position.z - placement.position[2]) * Math.cos(placement.rotationY)
-      const blend = selected ? Math.max(0, Math.min(1, (1.6 - distance) / 1.5)) : 0
+      const blend = selected || returning ? Math.max(0, Math.min(1, (1.6 - distance) / 1.5)) : 0
       portal.current.blend = blend * blend * (3 - 2 * blend)
     }
-    if (light.current) easing.damp(light.current, 'intensity', placement.project.room.spill.lightIntensity * 0.45 * reveal.current * (hovered ? 1.18 : selected ? 0.82 : 1), 0.2, delta)
-  })
+    if (light.current) easing.damp(light.current, 'intensity', placement.project.room.spill.lightIntensity * 0.9 * reveal.current * (hovered ? 1.18 : selected ? 0.82 : 1), 0.2, delta)
+  }, -2)
   const click = (event: ThreeEvent<MouseEvent>) => { event.stopPropagation(); onSelect() }
 
   return (
@@ -90,19 +85,17 @@ export function Door({ revealing, reveal, entranceOrder, placement, environment,
           <planeGeometry args={[OPENING_W, OPENING_H]} />
           <MeshPortalMaterial ref={portal} events={false} blur={0} resolution={256}>
             <color attach="background" args={['#030303']} />
-            <group ref={world}>
-              <Suspense fallback={null}>
-                <PortalWorld project={placement.project} selected={selected} revealing={revealing} entranceOrder={entranceOrder} />
-              </Suspense>
-            </group>
+            <Suspense fallback={null}>
+              <PortalWorld placement={placement} selected={selected} returning={returning} revealing={revealing} entranceOrder={entranceOrder} />
+            </Suspense>
           </MeshPortalMaterial>
         </mesh>
       </group>
       <pointLight ref={light} position={[0, 0.65, 0.28]} intensity={0} distance={4.4} decay={2} color={placement.project.room.light} />
-      {labelsVisible && <Html position={[0, -0.28, 0.68]} center distanceFactor={10} zIndexRange={[5, 1]}>
-        <button data-project-index={placement.project.index} className="door-label" aria-pressed={selected} onClick={(event) => { event.stopPropagation(); onSelect() }} onPointerDown={(event) => event.stopPropagation()} onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
-          <span>{placement.project.index} · {placement.project.industry}</span>
+      {labelsVisible && <Html position={[0, FRAME_HEIGHT + 0.55, 0.2]} transform distanceFactor={6} zIndexRange={[5, 1]}>
+        <button data-project-index={placement.project.index} className="door-label" style={{ '--sign-light': placement.project.room.light, '--sign-text': placement.project.room.text } as CSSProperties} aria-pressed={selected} onClick={(event) => { event.stopPropagation(); onSelect() }} onPointerDown={(event) => event.stopPropagation()} onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
           <strong>{placement.project.title}</strong>
+          <span>{placement.project.industry}</span>
         </button>
       </Html>}
     </group>

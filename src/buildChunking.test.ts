@@ -4,13 +4,11 @@ const viteConfig = await Bun.file(
   new URL('../vite.config.ts', import.meta.url),
 ).text()
 
-describe('WebGL production chunking', () => {
-  test('splits heavy renderer dependencies without suppressing Vite warnings', () => {
+describe('production dependency ordering', () => {
+  test('lets the bundler split the lazy scene without forced renderer groups', () => {
+    expect(viteConfig).not.toContain('codeSplitting')
+    expect(viteConfig).not.toContain('maxSize')
     expect(viteConfig).not.toContain('chunkSizeWarningLimit')
-    expect(viteConfig).toContain('codeSplitting')
-    expect(viteConfig).toContain("name: 'three-core'")
-    expect(viteConfig).toContain("name: 'three-addons'")
-    expect(viteConfig).toContain("name: 'react-three'")
-    expect(viteConfig).toContain('maxSize: 400_000')
+    expect(viteConfig).toContain("dedupe: ['three']")
   })
 })

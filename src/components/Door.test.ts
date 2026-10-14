@@ -11,13 +11,20 @@ describe('project doorway details', () => {
       expect(markup).toContain(project.title)
       expect(markup).toContain(project.description)
       expect(markup).toContain('Back to corridor')
-      expect(markup.match(/<img /g)).toHaveLength(project.tools.length)
+      if (['Weft', 'Polar', 'GigPilot', 'ByteForm', 'Ascent', 'EasyMD'].includes(project.title)) {
+        expect(markup).toContain('<table')
+        expect(markup).toContain('scope="col"')
+        expect(markup).toContain('scope="row"')
+      } else {
+        expect(markup.match(/<img /g)).toHaveLength(project.tools.length)
+      }
       if (project.link) {
         expect(markup).toContain(`href="${project.link}"`)
         expect(markup).toContain('rel="noopener noreferrer"')
       } else {
-        expect(markup).toContain('Coming soon')
-        expect(markup).not.toContain('<a ')
+        if (project.title === 'Polar') expect(markup).toContain('In development')
+        expect(markup).not.toContain('href=""')
+        expect(markup).not.toContain('target="_blank"')
       }
     })
   }

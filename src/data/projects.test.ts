@@ -21,18 +21,19 @@ describe('project rooms', () => {
       'ByteForm',
     ])
     expect(projects.map(({ index }) => index)).toEqual(['01', '02', '03', '04', '05', '06'])
-    expect(projects[0].description.startsWith('Matches small groups')).toBe(true)
-    expect(projects[1].description.startsWith('A memory layer')).toBe(true)
-    expect(projects[2].description.startsWith('Every message answered')).toBe(true)
-    expect(projects[3].description.startsWith('Finds gigs matched')).toBe(true)
-    expect(projects[4].description.startsWith('Capital intelligence')).toBe(true)
-    expect(projects[5].description.startsWith('Everything Typeform')).toBe(true)
+    expect(projects[0].description.startsWith('An AI powered platform')).toBe(true)
+    expect(projects[1].description.startsWith('Polar is an AI powered Work OS')).toBe(true)
+    expect(projects[2].description.startsWith('EasyMD is a telemedicine startup')).toBe(true)
+    expect(projects[3].description.startsWith('GigPilot is an AI powered freelance assistant')).toBe(true)
+    expect(projects[4].description.startsWith('Ascent is an AI powered platform')).toBe(true)
+    expect(projects[5].description.startsWith('ByteForm is an open source form builder')).toBe(true)
   })
 
   test('defines tool stacks and public destinations for project rooms', () => {
     expect(projects.every((project) => project.tools.length > 0)).toBe(true)
     expect(projects.filter((project) => project.link === '').map(({ title }) => title)).toEqual([
       'Polar',
+      'EasyMD',
     ])
   })
 

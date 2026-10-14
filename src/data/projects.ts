@@ -21,6 +21,12 @@ export interface Project {
   title: string
   subheadline: string
   description: string
+  story: {
+    problem: string
+    solution: string
+    impact: string
+    journey: string
+  }
   role: string
   room: RoomPalette
   url?: string
@@ -36,11 +42,17 @@ export const projects: Project[] = ([
     status: 'BUILDING',
     industry: 'WORK OS',
     title: 'Polar',
-    subheadline: 'Productivity and control over my work',
+    subheadline: 'Work should move forward, not just get organized.',
     description:
-      'A memory layer for your AI coding assistant. It remembers the work already done, so you never pay to generate the same answer twice.',
-    role: 'Builder',
-    tools: ['go'], // confirm
+      'Polar is an AI powered Work OS I’m building to help teams turn goals into actionable plans, adapt as things change, and focus on what actually moves them forward.',
+    story: {
+      problem: 'Managing work has become work itself. In small teams like mine, maintaining boards, updating tickets, and tracking changes means less time for the work that matters.',
+      solution: 'Polar turns Missions into Checkpoints and Actions, helping plans evolve alongside the work.',
+      impact: 'Polar is still in development. The goal is greater clarity, adaptability, and focus, with less time spent maintaining tools.',
+      journey: 'Born from my own frustration with managing projects while building startups, Polar is my attempt to build a workspace that understands the work instead of just storing it.',
+    },
+    role: 'Founder & Engineer',
+    tools: ['tauri', 'rust', 'react', 'typescript', 'vite', 'fastify', 'nodejs', 'neon'],
     link: '',
     room: {
       base: '#310910',
@@ -57,11 +69,17 @@ export const projects: Project[] = ([
     status: 'SHIPPING',
     industry: 'AI Freelancing',
     title: 'GigPilot',
-    subheadline: 'The right work, found for me',
+    subheadline: 'Finding work shouldn’t be a full time job.',
     description:
-      'Finds gigs matched to your profile, scores each one honestly, and helps you apply. The hunt runs itself.',
-    role: 'Builder',
-    tools: ['javascript', 'nextjs', 'nodejs'],
+      'GigPilot is an AI powered freelance assistant I built to help freelancers discover relevant opportunities, evaluate their potential, and create personalized proposals, all from a simple terminal interface.',
+    story: {
+      problem: 'The problem isn’t a lack of opportunities. It’s the time and effort it takes to find the right ones.',
+      solution: 'GigPilot understands your professional profile, searches for relevant freelance opportunities, and helps you move from discovery to application.',
+      impact: 'Freelancers should spend more time doing great work and less time looking for it, with relevant opportunities, automated research, and local control of their data.',
+      journey: 'I adapted an open source project for full time job searches into GigPilot, redesigning parts of its architecture and workflows around freelance opportunities.',
+    },
+    role: 'Creator & Engineer',
+    tools: ['nodejs', 'javascript'],
     link: 'https://github.com/alexpertuz/gig-pilot',
     room: {
       base: '#17191c',
@@ -78,11 +96,17 @@ export const projects: Project[] = ([
     status: 'SHIPPING',
     industry: 'SOCIAL',
     title: 'Weft',
-    subheadline: 'A network built on values, not access',
+    subheadline: "Meaningful connections don’t happen by accident.",
     description:
-      'Matches small groups of professionals by what they actually value. Know people worth knowing, without already knowing someone.',
-    role: 'Cofounder, COO',
-    tools: ['react_native', 'python', 'postgresql', 'pinecone'],
+      'An AI-powered event networking platform that matches people by goals and values, helping them make meaningful connections at events.',
+    story: {
+      problem: 'Networking events bring people together, but finding the right person still depends on luck, timing, and existing connections.',
+      solution: 'Weft combines AI matchmaking with human facilitation to turn shared intentions into real conversations.',
+      impact: '100+ attendees, 10+ event organizers, and 86% satisfaction at our pilot event.',
+      journey: 'From Surnx’s shared founder experiences to Weft’s AI matchmaking and human facilitated introductions at real events.',
+    },
+    role: 'Co-founder & COO',
+    tools: ['nextjs', 'nodejs', 'fastapi', 'elevenlabs', 'telnyx', 'railway', 'neon', 'vercel', 'firebase'],
     link: 'https://www.weftnow.com',
     room: {
       base: '#f26a0a',
@@ -97,12 +121,18 @@ export const projects: Project[] = ([
   {
     index: '05',
     status: 'CLIMBING',
-    industry: 'FINTECH',
+    industry: 'AI / Venture Capital',
     title: 'Ascent',
-    subheadline: 'Funded for merit, not pedigree',
+    subheadline: 'Every great startup deserves a fair shot at funding.',
     description:
-      'Capital intelligence that scores signal, not pedigree. Your metrics become your last name.',
-    role: 'Cofounder',
+      'Ascent is an AI powered platform developed in collaboration with a venture capital firm to evaluate startups based on evidence, provide personalized guidance, and connect promising founders with investors.',
+    story: {
+      problem: 'Founders struggle to understand what investors are looking for, while investors lack a consistent way to compare opportunities.',
+      solution: 'Ascent evaluates Founder, Market, Product, and Traction to turn startup evidence into personalized guidance and better investment opportunities.',
+      impact: 'Ascent explores how AI can make startup evaluation more accessible, consistent, and actionable for founders and investors.',
+      journey: 'Developed in collaboration with a venture capital firm, Ascent translates investment expertise into structured evaluations and meaningful guidance for founders.',
+    },
+    role: 'Product & Engineering',
     tools: ['python', 'react', 'vite', 'postgresql', 'mcp'],
     link: 'https://weascent.co',
     room: {
@@ -118,13 +148,19 @@ export const projects: Project[] = ([
   {
     index: '06',
     status: 'LIVE',
-    industry: 'SAAS',
+    industry: 'FORMS',
     title: 'ByteForm',
-    subheadline: 'Forms that talk back',
+    subheadline: 'Forms that actually feel like conversations.',
     description:
-      'Everything Typeform does, for less. Plus onboarding that runs as an AI voice call or an AI chat.',
-    role: 'Builder',
-    tools: ["nextjs", "javascript", "postgresql"],
+      'ByteForm is an open source form builder designed to turn traditional forms into natural, engaging conversations through chat and voice.',
+    story: {
+      problem: 'We shouldn’t have to choose between collecting structured data and having a natural conversation.',
+      solution: 'ByteForm turns questions into a conversation that feels natural, whether you’re typing or speaking.',
+      impact: 'Collecting information shouldn’t feel like a chore. ByteForm is built around engagement, flexibility, and simplicity.',
+      journey: 'ByteForm is a personal project exploring the product design and engineering behind more natural ways of collecting information.',
+    },
+    role: 'Creator & Engineer',
+    tools: ['nextjs', 'nodejs', 'postgresql', 'elevenlabs'],
     link: 'https://github.com/alexpertuz/ByteForm',
     room: {
       base: '#2a103d',
@@ -141,12 +177,18 @@ export const projects: Project[] = ([
     status: 'SHIPPING',
     industry: 'HEALTH',
     title: 'EasyMD',
-    subheadline: 'Every message answered, every slot filled',
+    subheadline: 'From fragile code to a better experience.',
     description:
-      'An AI that books appointments on the WhatsApp number your clients already use. No app to learn, no bookings lost.',
-    role: 'Builder',
-    tools: ['python', 'fastapi', 'supabase', 'whatsapp_business_api', 'google_calendar_api', 'claude_api', 'redis'],
-    link: 'https://github.com/alexpertuz/agendamax',
+      'EasyMD is a telemedicine startup connecting patients with healthcare professionals. I led the reengineering and redesign of its mobile app, transforming a buggy, difficult to maintain codebase into a more reliable, scalable, and intuitive experience.',
+    story: {
+      problem: 'Years of technical debt made the architecture difficult to maintain, while recurring bugs and confusing interactions frustrated patients and slowed development.',
+      solution: 'Reengineered the React Native codebase, improved performance and reliability, and redesigned the mobile experience around what patients actually needed.',
+      impact: 'A more stable experience for patients and a cleaner architecture that makes the product easier to maintain and evolve.',
+      journey: 'Progressively improved an existing application with real users and ongoing development, strengthening its foundations without disrupting the people depending on it.',
+    },
+    role: 'Mobile Product Lead',
+    tools: ['react_native', 'expo', 'typescript', 'javascript', 'circleci'],
+    link: '',
     room: {
       base: '#082a4f',
       gradient: ['#49a6ff', '#176bc5', '#092241'],

@@ -42,6 +42,7 @@ interface SceneProps {
   aboutOpen?: boolean
   onNameSelect?: () => void
   onReady: () => void
+  onProfileArrived?: () => void
 }
 
 function Doorways({ placements, reveals, revealing, selected, returning, labelsVisible, onSelect }: {
@@ -62,7 +63,7 @@ function Doorways({ placements, reveals, revealing, selected, returning, labelsV
   ))
 }
 
-export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProps) {
+export function Scene({ revealing, aboutOpen, onNameSelect, onReady, onProfileArrived }: SceneProps) {
   const [dpr, setDpr] = useState(() => Math.min(window.devicePixelRatio, 2))
   const [pageVisible, setPageVisible] = useState(() => !document.hidden)
   useEffect(() => {
@@ -117,7 +118,7 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
     <Canvas
       dpr={dpr}
       camera={{ position: [0, narrow ? 3.15 : 1.65, homeZ], fov: homeFov }}
-      frameloop={pageVisible && !aboutOpen ? 'always' : 'never'}
+      frameloop={pageVisible ? 'always' : 'never'}
       style={aboutOpen ? { pointerEvents: 'none' } : undefined}
       onPointerMissed={closeProject}
     >
@@ -133,19 +134,19 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
       <pointLight position={[0, 5, -2]} intensity={12} distance={24} />
       <StarField />
       <Floor placements={placements} reveals={reveals} />
-      {!narrow && revealing && <>
-        <Suspense fallback={null}><HeroManifesto /></Suspense>
-        <Suspense fallback={null}><NameText onSelect={onNameSelect} /></Suspense>
+      {revealing && <>
+        {!narrow && <Suspense fallback={null}><HeroManifesto profile={aboutOpen} /></Suspense>}
+        <Suspense fallback={null}><NameText onSelect={selected === null ? onNameSelect : undefined} visible={!narrow || !!aboutOpen} /></Suspense>
       </>}
       <Suspense fallback={null}>
         <Doorways placements={placements} reveals={reveals} revealing={revealing} selected={selected} returning={returning} labelsVisible={settledProject === null && returning === null && !narrow} onSelect={selectProject} />
       </Suspense>
       <SceneReady onReady={onReady} />
-      <CameraRig onSettled={setSettledProject} onReturned={finishReturn} narrow={narrow} focus={selected === null ? null : placements[selected]} />
+      <CameraRig profile={aboutOpen} onProfileArrived={onProfileArrived} onSettled={setSettledProject} onReturned={finishReturn} narrow={narrow} focus={selected === null ? null : placements[selected]} />
     </Canvas>
     {narrow && settledProject === null && returning === null && !aboutOpen && <>
       <header className="scene-mobile-intro">
-        <button onClick={onNameSelect}>Alexis Pertuz</button>
+        <button onClick={onNameSelect}>Antonio Pertuz</button>
         <p>Some problems have felt like closed doors.<br />These are the projects I’m building to open them.</p>
       </header>
       <nav className="mobile-projects" aria-label="Explore projects">

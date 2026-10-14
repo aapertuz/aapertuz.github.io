@@ -12,35 +12,26 @@ export interface AboutLogo {
 }
 
 export interface AboutContent {
-  eyebrow: string
   name: string
-  role: string
   description: string
   technologies: AboutLogo[]
-  companies: Array<{ name: string; detail: string }>
   links: AboutLink[]
 }
 
 export const aboutContent: AboutContent = {
-  eyebrow: 'ABOUT / PROFILE',
-  name: 'Antonio',
-  role: 'Head of Product · Software Engineer',
+  name: 'Antonio Pertuz',
   description: "I love every corner of products: design, architecture, engineering. With six years building, scaling, and helping tech companies ship their products across Latin America and the US, my mission is to drive innovation and disruption from the product layer out to impact real societies. Currently leading product at an AI telemedicine startup and building on the side.",
   technologies: [
     { label: 'React Native', icon: 'react_native' },
-    { label: 'React.js', icon: 'react' },
+    { label: 'Next.js', icon: 'nextjs' },
     { label: 'Python', icon: 'python' },
-    { label: 'Supabase', icon: 'supabase' },
+    { label: 'PostgreSQL', icon: 'postgresql' },
     { label: 'FastAPI', icon: 'fastapi' },
     { label: 'Node.js', icon: 'nodejs' },
   ],
-  companies: [
-    { name: 'EasyMD', detail: 'Head of Product at a telemedicine startup connecting patients with doctors across Latin America.' },
-    { name: 'Agendapro', detail: 'Senior Mobile Engineer and Product Lead at a scheduling platform for clinics, salons, and service businesses.' },
-  ],
   links: [
     { label: 'Email', href: 'mailto:antonio.pertuz99@gmail.com', icon: 'mail' },
-    { label: 'GitHub', href: 'https://github.com/alexpertuz', icon: 'github' },
+    { label: 'GitHub', href: 'https://github.com/aapertuz', icon: 'github' },
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/apertuz', icon: 'linkedin' },
   ],
 }

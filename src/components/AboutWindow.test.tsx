@@ -10,14 +10,17 @@ describe('AboutWindow', () => {
     const markup = renderToStaticMarkup(<AboutWindow open onClose={() => undefined} />)
     expect(markup).toContain('role="dialog"')
     expect(markup).toContain('aria-modal="true"')
-    expect(markup).toContain('Antonio')
+    expect(markup).toContain('Antonio Pertuz')
     expect(markup).toContain('Technologies')
-    expect(markup).toContain('Companies')
+    expect(markup).not.toContain('Companies')
+    expect(markup).not.toContain('<h2')
+    expect(markup).not.toContain('ABOUT / PROFILE')
+    expect(markup).toContain('I love every corner of products: design, architecture, engineering.')
     expect(markup).toContain('Contact')
     expect(markup).toContain('aria-label="Close About"')
   })
 
-  test('renders companies, technologies, and contact as logo-only marks', () => {
+  test('renders readable technologies and labeled contact destinations', () => {
     const markup = renderToStaticMarkup(<AboutWindow open onClose={() => undefined} />)
     expect(markup).toContain('about-window__logo-grid')
     expect(markup).toContain('about-window__logo-mark')
@@ -25,7 +28,10 @@ describe('AboutWindow', () => {
     expect(markup).toContain('<svg')
     expect(markup).not.toContain('>Technology 01<')
     expect(markup).not.toContain('>Company 01<')
-    expect(markup).not.toContain('>Email<')
+    expect(markup).toContain('>Email<')
+    expect(markup).toContain('>React Native<')
+    expect(markup).toContain('mailto:antonio.pertuz99@gmail.com')
+    expect(markup).toContain('href="https://github.com/aapertuz" aria-label="GitHub" target="_blank" rel="noopener noreferrer"')
   })
 
   test('does not render when closed', () => {
@@ -51,7 +57,7 @@ describe('AboutWindow', () => {
     expect(css).toContain('animation: about-window-enter 680ms var(--gravity-ease)')
     expect(css).toContain('top: calc(50% + 32px)')
     expect(css).toContain('calc(-50% - 64px)')
-    expect(css).toContain('.about-window__body { display: block;')
+    expect(css).toContain("grid-template-areas: 'intro contact' 'technologies technologies'")
     expect(css).toContain('place-items: center')
     expect(css).not.toContain('.about-backdrop')
     expect(css).not.toContain('about-window::before')

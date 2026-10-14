@@ -2,7 +2,7 @@ import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
 import { CanvasTexture, EquirectangularReflectionMapping, PMREMGenerator, SRGBColorSpace } from 'three'
 
-// A shared, locally generated studio reflection, used only by the door metal.
+// Locally generated studio reflections for the door metal and sculpted name.
 // Broad soft sources keep the finish satin; the black gaps preserve contrast.
 export function useFrameEnvironment() {
   const gl = useThree((state) => state.gl)

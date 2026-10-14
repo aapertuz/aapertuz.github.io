@@ -3,7 +3,7 @@ import { aboutContent } from './about'
 
 describe('About content', () => {
   test('contains every placeholder profile group', () => {
-    expect(aboutContent.name).toBe('Antonio')
+    expect(aboutContent.name).toBe('Antonio Pertuz')
     expect(aboutContent.description).toContain('telemedicine')
     expect(aboutContent.technologies).toHaveLength(6)
     expect(aboutContent.links.map((link) => link.label)).toEqual(['Email', 'GitHub', 'LinkedIn'])

@@ -9,6 +9,7 @@ import { techIcons } from "../data/techIcons";
 
 interface AboutWindowProps {
   open: boolean;
+  spatial?: boolean;
   onClose: () => void;
 }
 
@@ -16,10 +17,10 @@ function LogoMark({ logo }: { logo: AboutLogo }) {
   return (
     <li
       className="about-window__logo-mark"
-      aria-label={logo.label}
-      data-tooltip={logo.label}
+      data-icon={logo.icon}
     >
       <img src={techIcons[logo.icon]} alt="" loading="lazy" />
+      <span>{logo.label}</span>
     </li>
   );
 }
@@ -54,7 +55,7 @@ function ContactIcon({ icon }: { icon: AboutLink["icon"] }) {
   );
 }
 
-export function AboutWindow({ open, onClose }: AboutWindowProps) {
+export function AboutWindow({ open, onClose, spatial = false }: AboutWindowProps) {
   const [rendered, setRendered] = useState(open);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -94,10 +95,10 @@ export function AboutWindow({ open, onClose }: AboutWindowProps) {
       document.removeEventListener("keydown", onKeyDown);
       previous?.focus();
     };
-  }, [open, onClose]);
+  }, [open, rendered, onClose]);
 
   const finishClosing = (event: AnimationEvent<HTMLDivElement>) => {
-    if (!open && event.animationName === "about-window-exit")
+    if (!open && (event.animationName === "about-window-exit" || event.animationName === "profile-content-exit"))
       setRendered(false);
   };
 
@@ -105,83 +106,81 @@ export function AboutWindow({ open, onClose }: AboutWindowProps) {
 
   return (
     <div
-      className="about-window"
+      className="about-dialog"
       data-state={open ? "open" : "closing"}
       role="dialog"
       aria-modal="true"
       aria-labelledby="about-title"
       ref={dialogRef}
-      onAnimationEnd={finishClosing}
     >
-      <header className="about-window__header">
-        <div className="about-window__identity">
-          <p className="about-window__eyebrow">{aboutContent.eyebrow}</p>
-          <h1 id="about-title">{aboutContent.name}</h1>
-          <p className="about-window__role">{aboutContent.role}</p>
-        </div>
-        <button
-          ref={closeRef}
-          className="about-window__close"
-          type="button"
-          aria-label="Close About"
-          onClick={onClose}
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="m7 7 10 10M17 7 7 17" />
-          </svg>
+      {spatial && (
+        <button className="profile-journey-back" type="button" onClick={onClose}>
+          <span aria-hidden="true">←</span> Back to projects
         </button>
-      </header>
+      )}
+      <div
+        className={spatial ? "about-window about-window--spatial" : "about-window"}
+        data-state={open ? "open" : "closing"}
+        onAnimationEnd={finishClosing}
+      >
+        <header className="about-window__header">
+          <div className="about-window__identity">
+            <h1 id="about-title">{aboutContent.name}</h1>
+          </div>
+          <button
+            ref={closeRef}
+            className="about-window__close"
+            type="button"
+            aria-label="Close About"
+            onClick={onClose}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m7 7 10 10M17 7 7 17" />
+            </svg>
+          </button>
+        </header>
 
-      <div className="about-window__body">
-        <section
-          className="about-window__intro"
-          aria-labelledby="about-description"
-        >
-          <h2 id="about-description">A little context</h2>
-          <p>{aboutContent.description}</p>
-        </section>
-        <section aria-labelledby="about-technologies">
-          <h2 id="about-technologies">Technologies</h2>
-          <ul className="about-window__logo-grid">
-            {aboutContent.technologies.map((logo) => (
-              <LogoMark key={logo.label} logo={logo} />
-            ))}
-          </ul>
-        </section>
+        <div className="about-window__body">
+          <section
+            className="about-window__intro"
+            aria-label="About me"
+          >
+            <p className="about-window__description">{aboutContent.description}</p>
+          </section>
+          <section className="about-window__contact" aria-label="Contact">
+            <ul className="about-window__contact-list">
+              {aboutContent.links.map((link) => (
+                <li key={link.label}>
+                  <a
+                    className="about-window__contact-link"
+                    data-icon={link.icon}
+                    href={link.href}
+                    aria-label={link.label}
+                    target={link.icon === "mail" ? undefined : "_blank"}
+                    rel={link.icon === "mail" ? undefined : "noopener noreferrer"}
+                  >
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <ContactIcon icon={link.icon} />
+                    </svg>
+                    <span>{link.label}</span>
+                    <svg className="about-window__link-arrow" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M6 18 18 6M6 6h12v12" />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-        <section
-          className="about-window__projects"
-          aria-labelledby="about-projects"
-        >
-          <h2 id="about-projects">Companies</h2>
-          <ul>
-            {aboutContent.companies.map((company) => (
-              <li key={company.name}>
-                <strong>{company.name}</strong>
-                <span>{company.detail}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-        <section aria-labelledby="about-contact">
-          <h2 id="about-contact">Contact</h2>
-          <ul className="about-window__contact-list">
-            {aboutContent.links.map((link) => (
-              <li key={link.label}>
-                <a
-                  className="about-window__contact-link"
-                  href={link.href}
-                  aria-label={link.label}
-                  title={link.label}
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <ContactIcon icon={link.icon} />
-                  </svg>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+          <section className="about-window__technologies" aria-label="Technologies">
+            <ul className="about-window__logo-grid">
+              {aboutContent.technologies.map((logo) => (
+                <LogoMark key={logo.label} logo={logo} />
+              ))}
+            </ul>
+          </section>
+
+        </div>
       </div>
     </div>
   );

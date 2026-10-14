@@ -15,8 +15,9 @@ const targetLook = new Vector3()
 const aimMatrix = new Matrix4()
 const targetRotation = new Quaternion()
 
-export function CameraRig({ focus, narrow, onSettled, onReturned }: { focus: DoorPlacement | null; narrow: boolean; onSettled?: (focus: DoorPlacement) => void; onReturned?: () => void }) {
+export function CameraRig({ focus, narrow, onSettled, onReturned, profile = false, onProfileArrived }: { profile?: boolean; onProfileArrived?: () => void; focus: DoorPlacement | null; narrow: boolean; onSettled?: (focus: DoorPlacement) => void; onReturned?: () => void }) {
   const journey = useRef<{ focus: DoorPlacement; path: CubicBezierCurve3; rotation: Quaternion; elapsed: number } | null>(null)
+  const profileJourney = useRef<{ path: CubicBezierCurve3; rotation: Quaternion; elapsed: number; arrived: boolean; lookY: number } | null>(null)
   const returning = useRef<ReturnType<typeof createReturnJourney> | null>(null)
   const settled = useRef<DoorPlacement | null>(null)
   const look = useRef(HOME_LOOK.clone())
@@ -36,6 +37,41 @@ export function CameraRig({ focus, narrow, onSettled, onReturned }: { focus: Doo
       state.camera.fov = narrow ? 52 : 40
       state.camera.updateProjectionMatrix()
       state.invalidate()
+    }
+    if (profile) {
+      returning.current = null
+      if (!profileJourney.current) {
+        const distance = Math.max(9, 9 * state.size.height / state.size.width)
+        const eyeY = 2.9 - distance * Math.tan((narrow ? 52 : 40) * Math.PI / 360) * 0.54
+        const end = new Vector3(0, Math.max(0.9, eyeY), -13 + distance)
+        profileJourney.current = {
+          path: new CubicBezierCurve3(state.camera.position.clone(),
+            state.camera.position.clone().lerp(end, 0.35),
+            end.clone().add(new Vector3(0, 0, 2)), end),
+          rotation: state.camera.quaternion.clone(), elapsed: 0, arrived: false, lookY: eyeY,
+        }
+      }
+      const trip = profileJourney.current
+      trip.elapsed += delta
+      const t = reducedMotion ? 1 : Math.min(trip.elapsed / 2.6, 1)
+      const eased = t * t * (3 - 2 * t)
+      trip.path.getPointAt(eased, state.camera.position)
+      targetLook.set(0, trip.lookY, -13)
+      aimMatrix.lookAt(state.camera.position, targetLook, state.camera.up)
+      targetRotation.setFromRotationMatrix(aimMatrix)
+      state.camera.quaternion.slerpQuaternions(trip.rotation, targetRotation, eased)
+      look.current.copy(targetLook)
+      if (t === 1 && !trip.arrived) {
+        trip.arrived = true
+        onProfileArrived?.()
+      }
+      state.camera.updateMatrixWorld()
+      return
+    }
+    if (profileJourney.current) {
+      const trip = profileJourney.current
+      returning.current = createReturnJourney(trip.path, trip.elapsed, state.camera.quaternion)
+      profileJourney.current = null
     }
     if (focus && focusPose) {
       returning.current = null

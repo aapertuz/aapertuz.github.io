@@ -5,6 +5,8 @@ import { NAV_ITEMS, type NavItem } from './components/floatingNavModel'
 import { SceneBoundary } from './components/SceneBoundary'
 import { INTRO_DURATION_MS } from './scene/entrance'
 
+const SHOW_NAVBAR = false
+
 const Scene = lazy(() =>
   import('./components/Scene').then(({ Scene: SceneComponent }) => ({
     default: SceneComponent,
@@ -59,7 +61,7 @@ export default function App() {
 
   return (
     <main className="experience" data-about-open={aboutOpen || undefined}>
-      <FloatingNav active={active} onSelect={handleNavSelect} inert={aboutOpen} />
+      <FloatingNav active={active} onSelect={handleNavSelect} inert={aboutOpen} hidden={!SHOW_NAVBAR} />
       <AboutWindow open={aboutOpen} onClose={closeAbout} />
       <SceneBoundary>
         <Suspense fallback={<PresentationShell ready={false} />}>

@@ -25,9 +25,10 @@ interface FloatingNavProps {
   active?: NavItem
   onSelect?: (item: NavItem) => void
   inert?: boolean
+  hidden?: boolean
 }
 
-export function FloatingNav({ active = 'home', onSelect = () => undefined, inert = false }: FloatingNavProps) {
+export function FloatingNav({ active = 'home', onSelect = () => undefined, inert = false, hidden = false }: FloatingNavProps) {
   const [selected, setSelected] = useState<NavItem>(active)
   const [effect, setEffect] = useState(() => ({
     cycle: 0,
@@ -56,6 +57,7 @@ export function FloatingNav({ active = 'home', onSelect = () => undefined, inert
   return (
     <nav
       className="floating-nav"
+      hidden={hidden}
       aria-label="Primary navigation"
       data-selected={selected}
       aria-hidden={inert || undefined}

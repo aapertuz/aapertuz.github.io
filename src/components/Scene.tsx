@@ -1,5 +1,6 @@
 import { Canvas, useFrame } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
+import { IconMouse } from '@tabler/icons-react'
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { projects } from '../data/projects'
 import { getHomeCameraZ } from '../scene/cameraFraming'
@@ -151,6 +152,12 @@ export function Scene({ revealing, aboutOpen, onNameSelect, onReady }: SceneProp
         {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span className="mobile-projects__identity"><strong>{project.title}</strong><span>{project.industry}</span></span><span aria-hidden="true">↗</span></button>)}
       </nav>
     </>}
+    {revealing && selected === null && returning === null && !aboutOpen && (
+      <p className="scene-interaction-hint">
+        <IconMouse size={24} stroke={1.25} aria-hidden="true" />
+        <span>Click any door or my name to explore the portfolio.</span>
+      </p>
+    )}
     {settledProject !== null && !aboutOpen && <ProjectDetails project={settledProject.project} closing={returning !== null} onClose={closeProject} />}
     </>
   )

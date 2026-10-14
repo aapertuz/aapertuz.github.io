@@ -27,19 +27,19 @@ export const easymd = {
     screens: [
       {
         id: 'home', label: 'Home',
-        before: '/worlds/easymd-home-old.jpg', after: '/worlds/easymd-home-new.webp',
+        before: '/worlds/easymd-home-old.webp', after: '/worlds/easymd-home-new.webp',
         beforeNote: 'Colorful tiles compete for attention across services and consultations.',
         afterNote: 'Immediate care leads the page, followed by grouped services and quick actions.',
       },
       {
         id: 'initial', label: 'Welcome',
-        before: '/worlds/easymd-initial-old.jpg', after: '/worlds/easymd-initial-new.webp',
+        before: '/worlds/easymd-initial-old.webp', after: '/worlds/easymd-initial-new.webp',
         beforeNote: 'A large illustration shares the screen with several account actions.',
         afterNote: 'A quieter introduction puts one primary action in focus, with sign-in below.',
       },
       {
         id: 'doctor', label: 'Doctor profile',
-        before: '/worlds/easymd-doctor-old.jpg', after: '/worlds/easymd-doctor-new.webp',
+        before: '/worlds/easymd-doctor-old.webp', after: '/worlds/easymd-doctor-new.webp',
         beforeNote: 'Basic specialist details and an address sit above a separate booking button.',
         afterNote: 'A structured profile brings the bio, specialties, and credentials together with a visible booking action.',
       },

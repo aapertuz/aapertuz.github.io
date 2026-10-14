@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 import type { Project } from '../data/projects'
 import { polar } from '../data/polar'
 import { ProjectTechTable } from './ProjectTechTable'
+import { ProjectShowcase } from './ProjectShowcase'
+import { projectShowcases } from '../data/projectShowcases'
 
 const iconPaths: Record<string, ReactNode> = {
   mission: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="M12 1v3m0 16v3M1 12h3m16 0h3" /></>,
@@ -75,10 +77,12 @@ export function PolarCaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
+      <ProjectShowcase content={projectShowcases.Polar} projectName={project.title} />
+
       <section id="project-impact" data-project-section className="project-details__story polar-section" aria-labelledby="project-impact-title">
         <div className="polar-section__inner polar-impact">
           <header>
-            <p className="project-details__meta">04 / Impact</p>
+            <p className="project-details__meta">05 / Impact</p>
             <h3 id="project-impact-title">{polar.impact.headline}</h3>
             <p className="project-details__story-copy">{polar.impact.description}</p>
             <p className="polar-label polar-impact__note">What I’m working toward</p>
@@ -92,7 +96,7 @@ export function PolarCaseStudy({ project }: { project: Project }) {
       <section id="project-tech" data-project-section className="project-details__story polar-section" aria-labelledby="project-tech-title">
         <div className="polar-section__inner polar-tech">
           <header>
-            <p className="project-details__meta">05 / Tech</p>
+            <p className="project-details__meta">06 / Tech</p>
             <h3 id="project-tech-title">The technology behind Polar.</h3>
             <p className="project-details__story-copy">The goal is to keep the architecture simple enough to evolve quickly, with room for more intelligent workflows.</p>
           </header>
@@ -102,7 +106,7 @@ export function PolarCaseStudy({ project }: { project: Project }) {
 
       <section id="project-journey" data-project-section className="project-details__story polar-section polar-journey" aria-labelledby="project-journey-title">
         <div className="polar-section__inner">
-          <p className="project-details__meta">06 / The journey</p>
+          <p className="project-details__meta">07 / The journey</p>
           <h3 id="project-journey-title">{polar.journey.headline}</h3>
           <p className="project-details__story-copy">{polar.journey.description}</p>
           <ol className="polar-timeline" aria-label="Building Polar">

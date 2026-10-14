@@ -5,6 +5,8 @@ import {
 import type { Project } from '../data/projects'
 import { byteform } from '../data/byteform'
 import { ProjectTechTable } from './ProjectTechTable'
+import { ProjectShowcase } from './ProjectShowcase'
+import { projectShowcases } from '../data/projectShowcases'
 
 const icons = {
   form: IconForms, chat: IconMessageCircle, voice: IconMicrophone,
@@ -66,10 +68,12 @@ export function ByteFormCaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
+      <ProjectShowcase content={projectShowcases.ByteForm} projectName={project.title} />
+
       <section id="project-impact" data-project-section className="project-details__story byteform-section" aria-labelledby="project-impact-title">
         <div className="byteform-section__inner byteform-split">
           <header>
-            <p className="project-details__meta">04 / Impact</p>
+            <p className="project-details__meta">05 / Impact</p>
             <h3 id="project-impact-title">{byteform.impact.headline}</h3>
             <p className="project-details__story-copy">{byteform.impact.description}</p>
           </header>
@@ -82,7 +86,7 @@ export function ByteFormCaseStudy({ project }: { project: Project }) {
       <section id="project-tech" data-project-section className="project-details__story byteform-section byteform-tech" aria-labelledby="project-tech-title">
         <div className="byteform-section__inner byteform-split">
           <header>
-            <p className="project-details__meta">05 / The tech</p>
+            <p className="project-details__meta">06 / The tech</p>
             <h3 id="project-tech-title">{byteform.tech.headline}</h3>
             <p className="project-details__story-copy">{byteform.tech.description}</p>
           </header>
@@ -92,7 +96,7 @@ export function ByteFormCaseStudy({ project }: { project: Project }) {
 
       <section id="project-journey" data-project-section className="project-details__story byteform-section byteform-journey" aria-labelledby="project-journey-title">
         <div className="byteform-section__inner">
-          <p className="project-details__meta">06 / The journey</p>
+          <p className="project-details__meta">07 / The journey</p>
           <h3 id="project-journey-title">{byteform.journey.headline}</h3>
           <p className="project-details__story-copy">{byteform.journey.description}</p>
           <ol className="byteform-timeline" aria-label="Building ByteForm">

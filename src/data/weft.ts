@@ -10,7 +10,7 @@ export const weft = {
   solution: {
     headline: 'Networking, orchestrated by intelligence.',
     steps: [
-      { icon: 'conversation', title: 'Understand', label: 'AI assistant', description: 'Through natural conversations, the AI learns each attendee’s goals, interests, and motivations.' },
+      { icon: 'conversation', title: 'Understand', label: 'Kami · AI assistant', description: 'Kami learns each attendee’s goals, interests, and motivations through conversations in their existing messaging apps or direct phone calls. Attendees don’t need to download another app.' },
       { icon: 'match', title: 'Match', label: 'AI matchmaking', description: 'AI identifies valuable connections through shared goals, complementary interests, and context.' },
       { icon: 'connection', title: 'Connect', label: 'Wefters · Human facilitators', description: 'Wefters introduce matched attendees at physical events, turning shared intentions into real conversations.' },
     ],
@@ -25,13 +25,20 @@ export const weft = {
     ],
   },
   tech: {
-    description: 'Next.js, Node.js, and FastAPI support the web experience and backend services. OpenAI powers matchmaking, while ElevenLabs and Telnyx support voice and messaging. Managed hosting, PostgreSQL, and cloud storage keep the platform running.',
+    headline: 'Orchestrating Weft’s AI.',
+    description: 'I worked on the orchestration that connects Kami’s voice and messaging agents, attendee context, and the matching algorithm so conversations can lead to relevant introductions.',
+    agents: [
+      { icon: 'voice', title: 'Voice agents', description: 'Manage AI conversations over direct phone calls, with ElevenLabs and Telnyx supporting the voice experience.' },
+      { icon: 'conversation', title: 'Messaging agents', description: 'Handle SMS and messaging conversations, learning what attendees are looking for and keeping that context available for matching.' },
+      { icon: 'match', title: 'Matching algorithm', description: 'Use attendee goals, interests, and conversational context to identify relevant people and explain the connection.' },
+    ],
     technologies: [
       { category: 'Frontend', name: 'Next.js', icon: 'nextjs' },
       { category: 'Backend', items: [
         { name: 'FastAPI', icon: 'fastapi' },
         { name: 'Node.js', icon: 'nodejs' },
       ] },
+      { category: 'AI reasoning & matching', name: 'OpenAI', icon: 'openai' },
       { category: 'Voice', name: 'ElevenLabs', icon: 'elevenlabs' },
       { category: 'Voice & SMS', name: 'Telnyx', icon: 'telnyx' },
       { category: 'Backend hosting', name: 'Railway', icon: 'railway' },

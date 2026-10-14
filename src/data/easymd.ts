@@ -21,6 +21,30 @@ export const easymd = {
       { icon: 'experience', label: 'Redesign', summary: 'A clearer patient experience', title: 'Healthcare should feel effortless.', description: 'Redesigned the mobile experience with clearer navigation, more intuitive interactions, and a cleaner visual language that makes accessing healthcare simpler.' },
     ],
   },
+  redesign: {
+    headline: 'A clearer path to care.',
+    description: 'Selected examples from the broader mobile app redesign, showing a calmer visual language and clearer next steps.',
+    screens: [
+      {
+        id: 'home', label: 'Home',
+        before: '/worlds/easymd-home-old.jpg', after: '/worlds/easymd-home-new.webp',
+        beforeNote: 'Colorful tiles compete for attention across services and consultations.',
+        afterNote: 'Immediate care leads the page, followed by grouped services and quick actions.',
+      },
+      {
+        id: 'initial', label: 'Welcome',
+        before: '/worlds/easymd-initial-old.jpg', after: '/worlds/easymd-initial-new.webp',
+        beforeNote: 'A large illustration shares the screen with several account actions.',
+        afterNote: 'A quieter introduction puts one primary action in focus, with sign-in below.',
+      },
+      {
+        id: 'doctor', label: 'Doctor profile',
+        before: '/worlds/easymd-doctor-old.jpg', after: '/worlds/easymd-doctor-new.webp',
+        beforeNote: 'Basic specialist details and an address sit above a separate booking button.',
+        afterNote: 'A structured profile brings the bio, specialties, and credentials together with a visible booking action.',
+      },
+    ],
+  },
   impact: {
     headline: 'A better product, built on a stronger foundation.',
     description: 'The work focused on improving two things at once: the experience patients have today and the team’s ability to keep improving the product tomorrow.',
@@ -32,8 +56,13 @@ export const easymd = {
     ],
   },
   tech: {
-    headline: 'A maintainable mobile foundation.',
-    description: 'I restructured the React Native app, improved its performance, and strengthened its native integrations and release workflow across iOS and Android.',
+    headline: 'Rearchitecting the mobile experience.',
+    description: 'I rearchitected the React Native app around modular responsibilities, cache lifecycle management, and asynchronous background jobs to support a responsive interface and smoother voice and video calls across iOS and Android.',
+    engineering: [
+      { icon: 'architecture', title: 'Modular architecture', description: 'Applied separation of concerns to decouple interface code, application logic, and data access. Clear module boundaries reduced coupling and made features easier to maintain and extend.' },
+      { icon: 'cache', title: 'Cache lifecycle management', description: 'Managed cached application data and refresh lifecycles to reduce redundant network requests and keep frequently used data available without repeatedly blocking the interface on a fetch.' },
+      { icon: 'calling', title: 'Asynchronous job orchestration', description: 'Coordinated background jobs around voice and video call workflows, keeping noncritical processing outside the interactive path so call controls and the consultation experience stay responsive.' },
+    ],
     technologies: [
       { category: 'Mobile', items: [
         { name: 'React Native', icon: 'react_native' },

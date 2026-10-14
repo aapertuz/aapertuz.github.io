@@ -2,6 +2,8 @@ import type { ReactNode } from 'react'
 import type { Project } from '../data/projects'
 import { weft } from '../data/weft'
 import { ProjectTechTable } from './ProjectTechTable'
+import { ProjectShowcase } from './ProjectShowcase'
+import { projectShowcases } from '../data/projectShowcases'
 
 const iconPaths: Record<string, ReactNode> = {
   person: <><circle cx="12" cy="7" r="3" /><path d="M5 21v-3a7 7 0 0 1 14 0v3M9 21v-4m6 4v-4" /></>,
@@ -79,9 +81,11 @@ export function WeftCaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
+      <ProjectShowcase content={projectShowcases.Weft} projectName={project.title} />
+
       <section id="project-impact" data-project-section className="project-details__story weft-section" aria-labelledby="project-impact-title">
         <div className="weft-section__inner">
-          <p className="project-details__meta">04 / Impact</p>
+          <p className="project-details__meta">05 / Impact</p>
           <h3 id="project-impact-title">{weft.impact.headline}</h3>
           <p className="project-details__story-copy">{weft.impact.description}</p>
           <dl className="weft-metrics">
@@ -95,20 +99,25 @@ export function WeftCaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
-      <section id="project-tech" data-project-section className="project-details__story weft-section" aria-labelledby="project-tech-title">
+      <section id="project-tech" data-project-section className="project-details__story weft-section weft-tech-section" aria-labelledby="project-tech-title">
         <div className="weft-section__inner weft-tech">
           <header>
-            <p className="project-details__meta">05 / Tech</p>
-            <h3 id="project-tech-title">The technology behind Weft.</h3>
+            <p className="project-details__meta">06 / Tech</p>
+            <h3 id="project-tech-title">{weft.tech.headline}</h3>
             <p className="project-details__story-copy">{weft.tech.description}</p>
           </header>
+          <ul className="weft-agents" aria-label="AI agents and matching">
+            {weft.tech.agents.map((agent) => (
+              <li key={agent.title}><WeftIcon name={agent.icon} /><div><h4>{agent.title}</h4><p>{agent.description}</p></div></li>
+            ))}
+          </ul>
           <ProjectTechTable technologies={weft.tech.technologies} />
         </div>
       </section>
 
       <section id="project-journey" data-project-section className="project-details__story weft-section weft-journey" aria-labelledby="project-journey-title">
         <div className="weft-section__inner">
-          <p className="project-details__meta">06 / The journey</p>
+          <p className="project-details__meta">07 / The journey</p>
           <h3 id="project-journey-title">{weft.journey.headline}</h3>
           <p className="project-details__story-copy">{weft.journey.description}</p>
           <ol className="weft-timeline" aria-label="From Surnx to Weft">

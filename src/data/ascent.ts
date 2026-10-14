@@ -19,7 +19,7 @@ export const ascent = {
   },
   solution: {
     headline: 'Know where you stand. Know how to move forward.',
-    description: 'Ascent uses AI to evaluate startups through an investor’s perspective, transforming evidence into actionable guidance and better investment opportunities.',
+    description: 'Ascent combines AI evidence analysis with proprietary scoring and prediction algorithms to evaluate startups, generate projections, and estimate their likelihood of success. A simple interface makes those results accessible to founders and investors.',
     steps: [
       { icon: 'evaluate', label: 'Evaluate', title: 'Let the evidence speak.', description: 'Ascent analyzes startups across four dimensions: Founder, Market, Product, and Traction, looking beyond compelling pitches to understand their actual potential.' },
       { icon: 'direction', label: 'Improve', title: 'Turn feedback into direction.', description: 'Founders receive personalized insights into their strengths, weaknesses, and what they should prioritize to improve their investment readiness.' },
@@ -35,6 +35,15 @@ export const ascent = {
       { icon: 'connect', title: 'Opportunity', description: 'Help investors discover promising startups while giving founders a clearer path toward funding.' },
     ],
   },
+  tech: {
+    headline: 'Proprietary algorithms, made accessible.',
+    description: 'The simple interface sits on top of a proprietary startup scoring algorithm and a predictive modeling algorithm. Together, they turn startup evidence into assessments, projections, and estimates of future success.',
+    engineering: [
+      { icon: 'scoring', title: 'Proprietary scoring engine', description: 'An algorithm developed for Ascent scores startups across Founder, Market, Product, and Traction, translating structured evidence into comparable assessments.' },
+      { icon: 'traction', title: 'Predictive modeling', description: 'A prediction algorithm generates projections and estimates the likelihood of startup success from the available evidence, giving founders and investors a view of potential outcomes.' },
+      { icon: 'evidence', title: 'Evidence analysis', description: 'LLM powered analysis interprets founder and business evidence to support the evaluation workflow. The interface presents the resulting scores and insights in a form people can understand and act on.' },
+    ],
+  },
   journey: {
     headline: 'Turning investment expertise into software.',
     description: 'Ascent came from a collaboration with a venture capital firm that wanted to rethink how startups are evaluated and prepared for investment. The challenge was turning investment knowledge and judgment into meaningful, personalized guidance for founders.',
@@ -48,7 +57,8 @@ export const ascent = {
       { icon: 'ai', area: 'Artificial Intelligence', focus: 'LLM powered analysis and reasoning' },
       { icon: 'evaluate', area: 'Evaluation Engine', focus: 'Structured startup assessments' },
       { icon: 'evidence', area: 'Evidence Analysis', focus: 'Interpreting business and founder evidence' },
-      { icon: 'scoring', area: 'Scoring Model', focus: 'Founder, Market, Product, and Traction' },
+      { icon: 'scoring', area: 'Scoring Model', focus: 'Proprietary startup scoring algorithm' },
+      { icon: 'traction', area: 'Predictive Modeling', focus: 'Startup projections and estimated likelihood of success' },
       { icon: 'direction', area: 'Recommendations', focus: 'Personalized improvement guidance' },
       { icon: 'connect', area: 'Investor Discovery', focus: 'Connecting startups with relevant investors' },
     ],

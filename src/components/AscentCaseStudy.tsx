@@ -6,6 +6,8 @@ import {
 import type { Project } from '../data/projects'
 import { ascent } from '../data/ascent'
 import { ProjectTechTable } from './ProjectTechTable'
+import { ProjectShowcase } from './ProjectShowcase'
+import { projectShowcases } from '../data/projectShowcases'
 
 const icons = {
   founder: IconUsers, investor: IconChartDots, market: IconWorld,
@@ -78,10 +80,12 @@ export function AscentCaseStudy({ project }: { project: Project }) {
         </div>
       </section>
 
+      <ProjectShowcase content={projectShowcases.Ascent} projectName={project.title} />
+
       <section id="project-impact" data-project-section className="project-details__story ascent-section" aria-labelledby="project-impact-title">
         <div className="ascent-section__inner ascent-impact">
           <header>
-            <p className="project-details__meta">04 / Impact</p>
+            <p className="project-details__meta">05 / Impact</p>
             <h3 id="project-impact-title">{ascent.impact.headline}</h3>
             <p className="project-details__story-copy">{ascent.impact.description}</p>
           </header>
@@ -93,18 +97,23 @@ export function AscentCaseStudy({ project }: { project: Project }) {
 
       <section id="project-tech" data-project-section className="project-details__story ascent-section" aria-labelledby="project-tech-title">
         <div className="ascent-section__inner ascent-tech">
-          <header>
-            <p className="project-details__meta">05 / Tech</p>
-            <h3 id="project-tech-title">The technology behind Ascent.</h3>
-            <p className="project-details__story-copy">A focused stack for evidence based startup evaluation, AI reasoning, and investor discovery.</p>
+          <header className="project-engineering__header">
+            <p className="project-details__meta">06 / Tech</p>
+            <h3 id="project-tech-title">{ascent.tech.headline}</h3>
+            <p className="project-details__story-copy">{ascent.tech.description}</p>
           </header>
+          <ul className="project-engineering" aria-label="Startup evaluation algorithms">
+            {ascent.tech.engineering.map((item) => (
+              <li key={item.title}><AscentIcon name={item.icon} /><div><h4>{item.title}</h4><p>{item.description}</p></div></li>
+            ))}
+          </ul>
           <ProjectTechTable technologies={ascentStack} />
         </div>
       </section>
 
       <section id="project-journey" data-project-section className="project-details__story ascent-section ascent-journey" aria-labelledby="project-journey-title">
         <div className="ascent-section__inner">
-          <p className="project-details__meta">06 / The journey</p>
+          <p className="project-details__meta">07 / The journey</p>
           <h3 id="project-journey-title">{ascent.journey.headline}</h3>
           <p className="project-details__story-copy">{ascent.journey.description}</p>
           <ol className="ascent-timeline" aria-label="Turning investment expertise into software">

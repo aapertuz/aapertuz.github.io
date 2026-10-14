@@ -7,6 +7,7 @@ import { GigPilotCaseStudy } from './GigPilotCaseStudy'
 import { AscentCaseStudy } from './AscentCaseStudy'
 import { ByteFormCaseStudy } from './ByteFormCaseStudy'
 import { EasyMDCaseStudy } from './EasyMDCaseStudy'
+import { projectShowcases } from '../data/projectShowcases'
 
 const projectSections = [
   { id: 'overview', label: 'Overview' },
@@ -19,7 +20,11 @@ export function ProjectDetails({ project, onClose, closing = false }: { project:
   const panel = useRef<HTMLElement>(null)
   const [activeSection, setActiveSection] = useState('overview')
   const sections = [
-    ...projectSections,
+    ...projectSections.flatMap((section) => {
+      if (section.id !== 'solution') return [section]
+      if (project.title === 'EasyMD' || project.title in projectShowcases) return [section, { id: 'product', label: 'Product' }]
+      return [section]
+    }),
     ...(['Weft', 'Polar', 'GigPilot', 'EasyMD', 'ByteForm', 'Ascent'].includes(project.title) ? [{ id: 'tech', label: 'Tech' }] : []),
     { id: 'journey', label: 'Journey' },
   ]

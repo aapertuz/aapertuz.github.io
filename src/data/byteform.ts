@@ -10,9 +10,9 @@ export const byteform = {
   },
   solution: {
     headline: 'Less filling out. More talking.',
-    description: 'ByteForm explores a different way to collect information. Instead of making people work through a form, it turns questions into a conversation that feels natural, whether you’re typing or speaking.',
+    description: 'Build a form as you normally would. ByteForm makes those same questions available through voice, conversational chat, and an elegant Typeform-style form.',
     steps: [
-      { icon: 'form', label: 'Create', title: 'Build once, use it your way.', description: 'Create forms with the questions, fields, and information you need, without being locked into a single experience.' },
+      { icon: 'form', label: 'Create', title: 'Build once, use it your way.', description: 'Add questions, choose field types, and configure required answers just like in any normal form builder. One form definition powers all three experiences.' },
       { icon: 'chat', label: 'Converse', title: 'Let the conversation flow.', description: 'Turn traditional questions into an interactive chat that guides people through the form, one response at a time.' },
       { icon: 'voice', label: 'Speak', title: 'Sometimes talking is easier.', description: 'Let people answer using their voice, making the experience more natural and accessible.' },
     ],

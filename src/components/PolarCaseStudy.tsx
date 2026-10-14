@@ -33,6 +33,7 @@ export function PolarCaseStudy({ project }: { project: Project }) {
           <div className="polar-overview__copy">
             <h2 id="project-title">{project.subheadline}</h2>
             <p className="project-details__description">{project.description}</p>
+            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">{project.linkLabel ?? 'Visit project'} <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <dl className="project-details__facts">

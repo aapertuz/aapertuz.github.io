@@ -1,5 +1,5 @@
 import {
-  IconArrowUpRight, IconForms, IconMessageCircle, IconMicrophone,
+  IconArrowUpRight, IconBrandGithub, IconForms, IconMessageCircle, IconMicrophone,
   IconHeartHandshake, IconAdjustments, IconCheck,
 } from '@tabler/icons-react'
 import type { Project } from '../data/projects'
@@ -27,7 +27,7 @@ export function ByteFormCaseStudy({ project }: { project: Project }) {
           <div className="byteform-overview__copy">
             <h2 id="project-title">{project.subheadline}</h2>
             <p className="project-details__description">{project.description}</p>
-            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">Explore the source <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" /></a>
+            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">{project.linkLabel ?? 'Explore'} <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" /></a>
           </div>
         </div>
         <dl className="project-details__facts">
@@ -35,6 +35,7 @@ export function ByteFormCaseStudy({ project }: { project: Project }) {
           <div><dt>Category</dt><dd>{byteform.category}</dd></div>
           <div><dt>Platform</dt><dd>{byteform.platform}</dd></div>
           <div><dt>Type</dt><dd>{byteform.type}</dd></div>
+          {project.relatedLinks?.map((link) => <div key={link.url} className="byteform-overview__source"><dt>Source</dt><dd><a href={link.url} target="_blank" rel="noopener noreferrer" aria-label={link.label}><IconBrandGithub size={22} stroke={1.75} aria-hidden="true" /></a></dd></div>)}
         </dl>
       </section>
 

@@ -29,7 +29,7 @@ export function GigPilotCaseStudy({ project }: { project: Project }) {
           <div className="gigpilot-overview__copy">
             <h2 id="project-title">{project.subheadline}</h2>
             <p className="project-details__description">{project.description}</p>
-            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">Explore the source <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" /></a>
+            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">Explore in GitHub <IconArrowUpRight size={18} stroke={1.5} aria-hidden="true" /></a>
           </div>
         </div>
         <dl className="project-details__facts">

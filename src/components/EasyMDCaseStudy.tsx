@@ -74,6 +74,7 @@ export function EasyMDCaseStudy({ project }: { project: Project }) {
           <div className="easymd-overview__copy">
             <h2 id="project-title">{project.subheadline}</h2>
             <p className="project-details__description">{project.description}</p>
+            <a className="project-details__visit" href={project.link} target="_blank" rel="noopener noreferrer">{project.linkLabel ?? 'Visit project'} <span aria-hidden="true">↗</span></a>
             <a className="easymd-overview__next" href="#project-problem">Explore the rebuild <IconArrowDown size={18} stroke={1.5} aria-hidden="true" /></a>
           </div>
         </div>

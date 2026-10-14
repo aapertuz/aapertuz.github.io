@@ -1189,6 +1189,9 @@ canvas {
 .project-details[data-project='byteform'] .project-details__story-copy { color: var(--byteform-copy); }
 .project-details[data-project='byteform'] .project-details__facts { width: 100%; gap: 24px 40px; border-color: var(--byteform-line); }
 .project-details[data-project='byteform'] .project-details__facts dd { text-transform: none; }
+.byteform-overview__source a { display: inline-flex; align-items: center; color: inherit; transition: color 180ms ease, transform 180ms ease; }
+.byteform-overview__source a:hover { color: #c574f2; transform: translateY(-2px); }
+.byteform-overview__source a:focus-visible { outline: 2px solid #c574f2; outline-offset: 5px; border-radius: 3px; }
 .project-details[data-project='byteform'] .project-details__visit { transition: transform 180ms cubic-bezier(.2,.8,.2,1); }
 .project-details[data-project='byteform'] .project-details__visit:hover { transform: translateY(-1px); }
 .project-details[data-project='byteform'] .project-details__visit:active { transform: scale(.98); }

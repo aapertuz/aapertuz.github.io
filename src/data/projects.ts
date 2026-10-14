@@ -32,6 +32,8 @@ export interface Project {
   url?: string
   tools: string[]
   link: string
+  linkLabel?: string
+  relatedLinks?: { label: string; url: string }[]
 }
 
 const doorOrder = ['Weft', 'Polar', 'EasyMD', 'GigPilot', 'Ascent', 'ByteForm']
@@ -53,7 +55,8 @@ export const projects: Project[] = ([
     },
     role: 'Founder & Engineer',
     tools: ['tauri', 'rust', 'react', 'typescript', 'vite', 'fastify', 'nodejs', 'neon'],
-    link: '',
+    link: 'https://github.com/aapertuz/polar',
+    linkLabel: 'Explore in GitHub',
     room: {
       base: '#310910',
       gradient: ['#ed3528', '#8d1018', '#25070d'],
@@ -161,7 +164,9 @@ export const projects: Project[] = ([
     },
     role: 'Creator & Engineer',
     tools: ['nextjs', 'nodejs', 'postgresql', 'elevenlabs'],
-    link: 'https://github.com/alexpertuz/ByteForm',
+    link: 'https://getbyteform.com',
+    linkLabel: 'Explore',
+    relatedLinks: [{ label: 'Explore in GitHub', url: 'https://github.com/aapertuz/ByteForm' }],
     room: {
       base: '#2a103d',
       gradient: ['#bf66f4', '#7b29b0', '#32104a'],
@@ -188,7 +193,8 @@ export const projects: Project[] = ([
     },
     role: 'Mobile Product Lead',
     tools: ['react_native', 'expo', 'typescript', 'javascript', 'circleci'],
-    link: '',
+    link: 'https://www.easymd.app/',
+    linkLabel: 'Visit easymd.app',
     room: {
       base: '#082a4f',
       gradient: ['#49a6ff', '#176bc5', '#092241'],

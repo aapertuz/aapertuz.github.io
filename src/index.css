@@ -185,8 +185,17 @@ canvas {
 }
 
 @media (max-width: 900px) {
-  .experience .mobile-projects {
-    bottom: max(118px, calc(env(safe-area-inset-bottom) + 106px));
+  .scene-interaction-hint--touch {
+    position: static;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+
+  .scene-interaction-hint--touch svg {
+    flex-shrink: 0;
   }
 }
 
@@ -1403,11 +1412,12 @@ canvas {
 .scene-mobile-intro p { margin-top: 18px; color: #b8b7b4; font-size: 12px; line-height: 1.6; }
 .scene-mobile-intro button { display: block; margin: 0 auto; border: 0; background: none; color: #f7f4ee; font: 700 38px/1.1 'Helvetica Neue', Helvetica, sans-serif; letter-spacing: -.04em; cursor: pointer; pointer-events: auto; }
 .scene-mobile-intro button:focus-visible { outline: 2px solid #e8a33d; outline-offset: 8px; }
-.mobile-projects { position: absolute; z-index: 6; bottom: max(24px, env(safe-area-inset-bottom)); left: 24px; right: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 24px; }
+.scene-mobile-footer { position: absolute; z-index: 6; bottom: max(12px, env(safe-area-inset-bottom)); left: 24px; right: 24px; display: grid; gap: 12px; }
+.mobile-projects { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 16px; }
 .mobile-projects button { display: flex; align-items: center; gap: 10px; min-height: 44px; border: 0; border-top: 1px solid rgb(255 255 255 / 12%); background: transparent; color: #f7f4ee; font: 14px 'Helvetica Neue', Helvetica, sans-serif; text-align: left; cursor: pointer; }
-.mobile-projects__identity { display: grid; gap: 4px; padding: 8px 0; }
+.mobile-projects__identity { display: grid; gap: 4px; padding: 5px 0; }
 .mobile-projects__identity strong { font-size: 14px; font-weight: 500; }
-.mobile-projects__identity > span { color: #b8b7b4; font: 9px ui-monospace, monospace; letter-spacing: .1em; }
+.mobile-projects__identity > span { color: #b8b7b4; font: 9px ui-monospace, monospace; letter-spacing: .06em; }
 .mobile-projects button > span:last-child { margin-left: auto; color: #8d8d90; font-size: 14px; }
 .mobile-projects button:focus-visible { outline: 2px solid #e8a33d; outline-offset: 2px; }
 .mobile-projects button:hover, .mobile-projects button:active { color: #e8a33d; }
@@ -1575,7 +1585,7 @@ canvas {
   .scene-mobile-intro { top: 15%; }
   .scene-mobile-intro button { font-size: 30px; }
   .scene-mobile-intro p { margin-top: 14px; }
-  .mobile-projects { bottom: 12px; }
+  .scene-mobile-footer { bottom: max(8px, env(safe-area-inset-bottom)); gap: 4px; }
 }
 
 /* Keep project overview copy full width after removing the right-side artwork. */

@@ -1,5 +1,5 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { IconMouse } from '@tabler/icons-react'
+import { IconHandFinger, IconMouse } from '@tabler/icons-react'
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { PlaneGeometry, type BufferGeometry } from 'three'
 import { projects } from '../data/projects'
@@ -286,11 +286,17 @@ export function Scene({ revealing, aboutOpen = false, onNameSelect, onReady, onP
           <button onClick={onNameSelect}>Antonio Pertuz</button>
           <p>Some problems have felt like closed doors.<br />These are the projects I’m building to open them.</p>
         </header>
-        <nav className="mobile-projects" aria-label="Explore projects">
-          {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span className="mobile-projects__identity"><strong>{project.title}</strong><span>{project.industry}</span></span><span aria-hidden="true">↗</span></button>)}
-        </nav>
+        <div className="scene-mobile-footer">
+          <nav className="mobile-projects" aria-label="Explore projects">
+            {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span className="mobile-projects__identity"><strong>{project.title}</strong><span>{project.industry}</span></span><span aria-hidden="true">↗</span></button>)}
+          </nav>
+          {revealing && selected === null && <p className="scene-interaction-hint scene-interaction-hint--touch">
+            <IconHandFinger size={18} stroke={1.5} aria-hidden="true" />
+            <span>Touch a door or my name to interact</span>
+          </p>}
+        </div>
       </>}
-      {revealing && selected === null && returning === null && !aboutOpen && (
+      {!narrow && revealing && selected === null && returning === null && !aboutOpen && (
         <p className="scene-interaction-hint">
           <IconMouse size={24} stroke={1.25} aria-hidden="true" />
           <span>Click any door or my name to explore the portfolio.</span>

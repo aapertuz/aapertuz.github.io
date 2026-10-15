@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { CubicBezierCurve3, Matrix4, Quaternion, Vector3 } from 'three'
 import { FRAME_HEIGHT, FRAME_THICKNESS } from './frameGeometry'
 import { getHomeCameraZ } from '../scene/cameraFraming'
+import { aimMobileProfile, getProfileFraming } from '../scene/profileFraming'
 import type { DoorPlacement } from '../scene/layout'
 import { advanceReturnJourney, createReturnJourney } from '../scene/returnJourney'
 import { measureUpdateEnd, measureUpdateStart } from './performanceDiagnostics'
@@ -18,8 +19,9 @@ const targetRotation = new Quaternion()
 
 export function CameraRig({ focus, narrow, onSettled, onReturned, profile = false, onProfileArrived }: { profile?: boolean; onProfileArrived?: () => void; focus: DoorPlacement | null; narrow: boolean; onSettled?: (focus: DoorPlacement) => void; onReturned?: () => void }) {
   const journey = useRef<{ focus: DoorPlacement; path: CubicBezierCurve3; rotation: Quaternion; elapsed: number } | null>(null)
-  const profileJourney = useRef<{ path: CubicBezierCurve3; rotation: Quaternion; elapsed: number; arrived: boolean; lookY: number } | null>(null)
+  const profileJourney = useRef<{ path: CubicBezierCurve3; rotation: Quaternion; elapsed: number; arrived: boolean; framing: ReturnType<typeof getProfileFraming> } | null>(null)
   const returning = useRef<ReturnType<typeof createReturnJourney> | null>(null)
+  const profileReturning = useRef<ReturnType<typeof getProfileFraming> | null>(null)
   const settled = useRef<DoorPlacement | null>(null)
   const look = useRef(HOME_LOOK.clone())
   const homeIdle = useRef(false)
@@ -27,6 +29,7 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
   const size = useThree((state) => state.size)
   const cameraFov = narrow ? 52 : 40
   const homeZ = useMemo(() => getHomeCameraZ(size.width, size.height, cameraFov), [size.width, size.height, cameraFov])
+  const profileFraming = useMemo(() => getProfileFraming(size.width, size.height, narrow), [size.width, size.height, narrow])
 
   useEffect(() => {
     homeIdle.current = false
@@ -53,7 +56,7 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
       measureUpdateEnd(startedAt)
       return
     }
-    if (profile && profileJourney.current?.arrived) {
+    if (profile && profileJourney.current?.arrived && profileJourney.current.framing === profileFraming) {
       state.camera.updateMatrixWorld()
       measureUpdateEnd(startedAt)
       return
@@ -65,15 +68,18 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
     }
     if (profile) {
       returning.current = null
-      if (!profileJourney.current) {
-        const distance = Math.max(9, 9 * state.size.height / state.size.width)
-        const eyeY = 2.9 - distance * Math.tan((narrow ? 52 : 40) * Math.PI / 360) * 0.54
-        const end = new Vector3(0, Math.max(0.9, eyeY), -13 + distance)
+      profileReturning.current = null
+      if (!profileJourney.current || profileJourney.current.framing !== profileFraming) {
+        const framing = profileFraming
+        const { end } = framing
+        const lift = state.camera.position.clone()
+        if (narrow) lift.y = end.y
+        else lift.lerp(end, 0.35)
         profileJourney.current = {
           path: new CubicBezierCurve3(state.camera.position.clone(),
-            state.camera.position.clone().lerp(end, 0.35),
+            lift,
             end.clone().add(new Vector3(0, 0, 2)), end),
-          rotation: state.camera.quaternion.clone(), elapsed: 0, arrived: false, lookY: eyeY,
+          rotation: state.camera.quaternion.clone(), elapsed: 0, arrived: false, framing,
         }
       }
       const trip = profileJourney.current
@@ -81,10 +87,14 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
       const t = reducedMotion ? 1 : Math.min(trip.elapsed / 2.6, 1)
       const eased = t * t * (3 - 2 * t)
       trip.path.getPointAt(eased, state.camera.position)
-      targetLook.set(0, trip.lookY, -13)
-      aimMatrix.lookAt(state.camera.position, targetLook, state.camera.up)
-      targetRotation.setFromRotationMatrix(aimMatrix)
-      state.camera.quaternion.slerpQuaternions(trip.rotation, targetRotation, eased)
+      targetLook.copy(trip.framing.look)
+      if (narrow) {
+        aimMobileProfile(state.camera.position, trip.framing, state.camera.quaternion)
+      } else {
+        aimMatrix.lookAt(state.camera.position, targetLook, state.camera.up)
+        targetRotation.setFromRotationMatrix(aimMatrix)
+        state.camera.quaternion.slerpQuaternions(trip.rotation, targetRotation, eased)
+      }
       look.current.copy(targetLook)
       if (t === 1 && !trip.arrived) {
         trip.arrived = true
@@ -96,10 +106,12 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
     if (profileJourney.current) {
       const trip = profileJourney.current
       returning.current = createReturnJourney(trip.path, trip.elapsed, state.camera.quaternion)
+      profileReturning.current = narrow ? trip.framing : null
       profileJourney.current = null
     }
     if (focus && focusPose) {
       returning.current = null
+      profileReturning.current = null
       const { normal, threshold, inward } = focusPose
       if (journey.current?.focus !== focus) {
         journey.current = {
@@ -141,11 +153,13 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
       aimMatrix.lookAt(targetPos, targetLook, state.camera.up)
       targetRotation.setFromRotationMatrix(aimMatrix)
       const complete = advanceReturnJourney(returning.current, delta, targetRotation, state.camera.position, state.camera.quaternion, reducedMotion)
+      if (profileReturning.current) aimMobileProfile(state.camera.position, profileReturning.current, state.camera.quaternion)
       // Keep the look target consistent with the actual orientation so the
       // home damping cannot snap the camera after the journey finishes.
       look.current.copy(targetLook)
       if (complete) {
         returning.current = null
+        profileReturning.current = null
         onReturned?.()
       }
     } else if (reducedMotion) {

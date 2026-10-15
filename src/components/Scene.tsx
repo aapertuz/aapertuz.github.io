@@ -122,7 +122,7 @@ function SceneContents({ placements, reveals, revealing, aboutOpen, narrow, sele
       <Floor placements={placements} reveals={reveals} />
       {revealing && <>
         {!narrow && <Suspense fallback={null}><HeroManifesto profile={aboutOpen} /></Suspense>}
-        <Suspense fallback={null}><NameText onSelect={selected === null ? onNameSelect : undefined} visible={!narrow || !!aboutOpen} /></Suspense>
+        <Suspense fallback={null}><NameText onSelect={selected === null ? onNameSelect : undefined} visible={!narrow || selected === null} narrow={narrow} profile={aboutOpen} /></Suspense>
       </>}
       <Suspense fallback={null}>
         <Doorways
@@ -281,11 +281,12 @@ export function Scene({ revealing, aboutOpen = false, onNameSelect, onReady, onP
           onProfileArrived={handleProfileArrived}
         />}
       </Canvas>
-      {narrow && settledProject === null && returning === null && !aboutOpen && <>
+      {narrow && settledProject === null && returning === null && (
         <header className="scene-mobile-intro">
-          <button onClick={onNameSelect}>Antonio Pertuz</button>
           <p>Some problems have felt like closed doors.<br />These are the projects I’m building to open them.</p>
         </header>
+      )}
+      {narrow && settledProject === null && returning === null && !aboutOpen && (
         <div className="scene-mobile-footer">
           <nav className="mobile-projects" aria-label="Explore projects">
             {projects.map((project, index) => <button key={project.title} data-project-index={project.index} onClick={() => selectProject(index)}><span className="mobile-projects__identity"><strong>{project.title}</strong><span>{project.industry}</span></span><span aria-hidden="true">↗</span></button>)}
@@ -295,7 +296,7 @@ export function Scene({ revealing, aboutOpen = false, onNameSelect, onReady, onP
             <span>Touch a door or my name to interact</span>
           </p>}
         </div>
-      </>}
+      )}
       {!narrow && revealing && selected === null && returning === null && !aboutOpen && (
         <p className="scene-interaction-hint">
           <IconMouse size={24} stroke={1.25} aria-hidden="true" />

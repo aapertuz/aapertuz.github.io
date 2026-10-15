@@ -7,7 +7,7 @@ const framingFile = Bun.file(new URL('../scene/cameraFraming.ts', import.meta.ur
 describe('responsive camera framing', () => {
   test('uses viewport-aware home distance in the rig and initial camera', async () => {
     expect(await framingFile.exists()).toBe(true)
-    expect(rigSource).toContain('getHomeCameraZ(state.size.width, state.size.height, fov)')
+    expect(rigSource).toContain('getHomeCameraZ(size.width, size.height, cameraFov)')
     expect(sceneSource).toContain('getHomeCameraZ(window.innerWidth, window.innerHeight, homeFov)')
   })
 

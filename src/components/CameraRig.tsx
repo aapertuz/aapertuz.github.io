@@ -1,11 +1,12 @@
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { easing } from 'maath'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { CubicBezierCurve3, Matrix4, Quaternion, Vector3 } from 'three'
 import { FRAME_HEIGHT, FRAME_THICKNESS } from './frameGeometry'
 import { getHomeCameraZ } from '../scene/cameraFraming'
 import type { DoorPlacement } from '../scene/layout'
 import { advanceReturnJourney, createReturnJourney } from '../scene/returnJourney'
+import { measureUpdateEnd, measureUpdateStart } from './performanceDiagnostics'
 
 const HOME_POS = new Vector3(0, 1.65, 14.5)
 const HOME_LOOK = new Vector3(0, 1.65, -6)
@@ -21,7 +22,16 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
   const returning = useRef<ReturnType<typeof createReturnJourney> | null>(null)
   const settled = useRef<DoorPlacement | null>(null)
   const look = useRef(HOME_LOOK.clone())
+  const homeIdle = useRef(false)
   const reducedMotion = useMemo(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches, [])
+  const size = useThree((state) => state.size)
+  const cameraFov = narrow ? 52 : 40
+  const homeZ = useMemo(() => getHomeCameraZ(size.width, size.height, cameraFov), [size.width, size.height, cameraFov])
+
+  useEffect(() => {
+    homeIdle.current = false
+    settled.current = null
+  }, [focus, narrow, profile, size.width, size.height])
 
   const focusPose = useMemo(() => {
     if (!focus) return null
@@ -31,12 +41,27 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
   }, [focus])
 
   useFrame((state, frameDelta) => {
+    const startedAt = measureUpdateStart()
     // A resumed tab must not jump through a journey or its damping animation.
     const delta = Math.min(frameDelta, 0.05)
     if ('fov' in state.camera && state.camera.fov !== (narrow ? 52 : 40)) {
       state.camera.fov = narrow ? 52 : 40
       state.camera.updateProjectionMatrix()
       state.invalidate()
+    }
+    if (homeIdle.current && !profile && !focus && !returning.current) {
+      measureUpdateEnd(startedAt)
+      return
+    }
+    if (profile && profileJourney.current?.arrived) {
+      state.camera.updateMatrixWorld()
+      measureUpdateEnd(startedAt)
+      return
+    }
+    if (focus && settled.current === focus && journey.current?.focus === focus) {
+      state.camera.updateMatrixWorld()
+      measureUpdateEnd(startedAt)
+      return
     }
     if (profile) {
       returning.current = null
@@ -108,8 +133,6 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
         returning.current = createReturnJourney(journey.current.path, journey.current.elapsed, state.camera.quaternion)
       }
       journey.current = null
-      const fov = 'fov' in state.camera && typeof state.camera.fov === 'number' ? state.camera.fov : 40
-      const homeZ = getHomeCameraZ(state.size.width, state.size.height, fov)
       targetPos.set(HOME_POS.x, narrow ? 3.15 : HOME_POS.y, homeZ)
       targetLook.copy(HOME_LOOK)
       if (narrow) targetLook.y = 2.5
@@ -141,6 +164,10 @@ export function CameraRig({ focus, narrow, onSettled, onReturned, profile = fals
       onSettled?.(focus)
     }
     state.camera.updateMatrixWorld()
+    homeIdle.current = !profile && !focus && !returning.current
+      && state.camera.position.equals(targetPos)
+      && look.current.equals(targetLook)
+    measureUpdateEnd(startedAt)
   }, -3)
 
   return null

@@ -3,9 +3,33 @@ import { AboutWindow } from './components/AboutWindow'
 import { FloatingNav } from './components/FloatingNav'
 import { NAV_ITEMS, type NavItem } from './components/floatingNavModel'
 import { SceneBoundary } from './components/SceneBoundary'
+import { isPerformanceDiagnosticsEnabled, type PerformanceSnapshot } from './components/performanceDiagnostics'
 import { INTRO_DURATION_MS } from './scene/entrance'
 
 const SHOW_NAVBAR = false
+
+function PerformanceOverlay() {
+  const [snapshot, setSnapshot] = useState<PerformanceSnapshot | null>(null)
+  useEffect(() => {
+    if (!isPerformanceDiagnosticsEnabled()) return
+    const update = () => setSnapshot(window.__portfolioPerf ?? null)
+    const timer = window.setInterval(update, 500)
+    update()
+    return () => window.clearInterval(timer)
+  }, [])
+  if (!isPerformanceDiagnosticsEnabled() || !snapshot) return null
+  const gpu = snapshot.gpuP95Ms === null ? 'unavailable' : `${snapshot.gpuP95Ms.toFixed(2)} ms`
+  return (
+    <pre className="performance-overlay" aria-hidden="true">
+      {`phase ${snapshot.phase} · DPR ${snapshot.dpr.toFixed(2)}\n`}
+      {`frame interval p95 ${snapshot.frameIntervalP95Ms.toFixed(2)} ms · >16.67 ms ${snapshot.intervalsOver16MsPercent.toFixed(1)}%\n`}
+      {`CPU update/render p95 ${snapshot.cpuUpdateP95Ms.toFixed(2)} / ${snapshot.cpuRenderP95Ms.toFixed(2)} ms\n`}
+      {`GPU p95 / frame ${gpu} · draws ${snapshot.drawCalls.toFixed(1)} / frame\n`}
+      {`canvas ${snapshot.canvas.width}×${snapshot.canvas.height} · target ${snapshot.target.width}×${snapshot.target.height}\n`}
+      {`resources ${snapshot.estimatedResourceMiB.toFixed(1)} MiB est. · ${snapshot.geometries} geometries · ${snapshot.textures} textures · ${snapshot.samples} frames`}
+    </pre>
+  )
+}
 
 const Scene = lazy(() =>
   import('./components/Scene').then(({ Scene: SceneComponent }) => ({
@@ -73,6 +97,7 @@ export default function App() {
 
   return (
     <main className="experience" data-about-open={aboutOpen || undefined}>
+      <PerformanceOverlay />
       <FloatingNav active={active} onSelect={handleNavSelect} inert={aboutOpen} hidden={!SHOW_NAVBAR} />
       <AboutWindow open={aboutOpen && aboutArrived} onClose={closeAbout} spatial />
       {aboutOpen && !aboutArrived && <button className="profile-journey-back" onClick={closeAbout}>← Back to projects</button>}

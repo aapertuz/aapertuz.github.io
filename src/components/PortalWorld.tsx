@@ -1,10 +1,11 @@
 import { useTexture } from '@react-three/drei'
 import { Color, SRGBColorSpace, Vector2, type MeshBasicMaterial } from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { DoorPlacement } from '../scene/layout'
 import { DARK_FRAME_HOLD, DOOR_STAGGER, revealProgress } from '../scene/entrance'
 import { createPreviewFraming } from '../scene/previewFraming'
+import { measureUpdateEnd, measureUpdateStart, registerTexture } from './performanceDiagnostics'
 
 // The artwork stays fixed in screen space; the moving doorway reveals it.
 export function PortalWorld({ placement, selected, returning, revealing, entranceOrder }: {
@@ -24,6 +25,10 @@ export function PortalWorld({ placement, selected, returning, revealing, entranc
   const elapsed = useRef(0)
   const pan = useRef({ elapsed: 0, progress: 0, returnElapsed: 0, returnStart: 0 })
   const framePreview = useMemo(() => createPreviewFraming(placement), [placement])
+  const previousViewport = useRef({ width: 0, height: 0, imageWidth: 0, imageHeight: 0 })
+  const previousCamera = useRef(new Float32Array(32))
+  const previousPan = useRef(-1)
+  const initializedCamera = useRef(false)
   const artwork = useMemo(() => ({
     blur: { value: 4.5 },
     reveal: { value: 0 },
@@ -58,15 +63,27 @@ export function PortalWorld({ placement, selected, returning, revealing, entranc
   }, [artwork])
   const reducedMotion = useMemo(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches, [])
   const { size } = useThree()
+  useEffect(() => {
+    registerTexture(texture)
+  }, [texture])
   useFrame(({ camera }, frameDelta) => {
-    const viewportAspect = size.width / size.height
-    const imageAspect = image.width / image.height
-    // Centered cover crop: preserve proportions and never expose empty edges.
-    artwork.crop.value.set(Math.min(1, viewportAspect / imageAspect), Math.min(1, imageAspect / viewportAspect))
+    const startedAt = measureUpdateStart()
+    const viewport = previousViewport.current
+    if (viewport.width !== size.width || viewport.height !== size.height
+      || viewport.imageWidth !== image.width || viewport.imageHeight !== image.height) {
+      const viewportAspect = size.width / size.height
+      const imageAspect = image.width / image.height
+      // Centered cover crop: preserve proportions and never expose empty edges.
+      artwork.crop.value.set(Math.min(1, viewportAspect / imageAspect), Math.min(1, imageAspect / viewportAspect))
+      viewport.width = size.width
+      viewport.height = size.height
+      viewport.imageWidth = image.width
+      viewport.imageHeight = image.height
+    }
     const delta = Math.min(frameDelta, 0.05)
     // Finish the pan before the portal starts its fullscreen blend. Scale
     // stays constant throughout, including arrival and the return journey.
-    pan.current.elapsed = selected ? pan.current.elapsed + delta : 0
+    pan.current.elapsed = selected ? Math.min(1.5, pan.current.elapsed + delta) : 0
     if (selected) {
       pan.current.progress = reducedMotion ? 1 : Math.max(pan.current.progress, revealProgress(pan.current.elapsed, 0, 1.5))
       pan.current.returnElapsed = 0
@@ -76,16 +93,38 @@ export function PortalWorld({ placement, selected, returning, revealing, entranc
         + (camera.position.z - placement.position[2]) * Math.cos(placement.rotationY)
       // Keep the interior composition and light steady until the fullscreen
       // blend has ended; restore the preview while backing into the corridor.
-      if (!returning || distance >= 1.6) pan.current.returnElapsed += delta
+      if ((!returning || distance >= 1.6) && pan.current.returnElapsed < 1.5) pan.current.returnElapsed = Math.min(1.5, pan.current.returnElapsed + delta)
       pan.current.progress = reducedMotion ? 0 : pan.current.returnStart * (1 - revealProgress(pan.current.returnElapsed, 0, 1.5))
     }
-    artwork.glare.value = 1 - revealProgress(pan.current.progress, 0.25, 0.7)
-    framePreview(camera, artwork.crop.value, pan.current.progress, artwork.offset.value)
-    if (revealing) elapsed.current += delta
     const delay = DARK_FRAME_HOLD + entranceOrder * DOOR_STAGGER + 0.18
+    if (revealing && elapsed.current < delay + 1.75) elapsed.current = Math.min(delay + 1.75, elapsed.current + delta)
+    const glare = 1 - revealProgress(pan.current.progress, 0.25, 0.7)
+    if (artwork.glare.value !== glare) artwork.glare.value = glare
+
+    let cameraChanged = !initializedCamera.current
+    const matrix = camera.matrixWorld.elements
+    const projection = camera.projectionMatrix.elements
+    for (let index = 0; index < 16; index++) {
+      if (previousCamera.current[index] !== matrix[index] || previousCamera.current[index + 16] !== projection[index]) cameraChanged = true
+      previousCamera.current[index] = matrix[index]
+      previousCamera.current[index + 16] = projection[index]
+    }
+    initializedCamera.current = true
+    if (cameraChanged || previousPan.current !== pan.current.progress) {
+      framePreview(camera, artwork.crop.value, pan.current.progress, artwork.offset.value)
+      previousPan.current = pan.current.progress
+    }
+
     const immediate = reducedMotion || selected || returning
-    artwork.reveal.value = revealing ? (immediate ? 1 : revealProgress(elapsed.current, delay, 0.8)) : 0
-    artwork.blur.value = Math.max(artwork.glare.value * 1.2, immediate ? 0 : 4.5 * (1 - revealProgress(elapsed.current, delay, 1.75)))
+    const reveal = revealing ? (immediate ? 1 : revealProgress(elapsed.current, delay, 0.8)) : 0
+    const blur = Math.max(artwork.glare.value * 1.2, immediate ? 0 : 4.5 * (1 - revealProgress(elapsed.current, delay, 1.75)))
+    if (artwork.reveal.value !== reveal) artwork.reveal.value = reveal
+    if (artwork.blur.value !== blur) artwork.blur.value = blur
+    if (!cameraChanged && !selected && !returning && (!revealing || elapsed.current >= delay + 1.75) && pan.current.progress === 0) {
+      measureUpdateEnd(startedAt)
+      return
+    }
+    measureUpdateEnd(startedAt)
   }, -1)
 
   return (

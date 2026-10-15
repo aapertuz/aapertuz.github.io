@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { easing } from 'maath'
 import type { Group } from 'three'
@@ -6,7 +6,12 @@ import { Text } from '@react-three/drei'
 
 export function HeroManifesto({ profile = false }: { profile?: boolean }) {
   const group = useRef<Group>(null)
-  useFrame((_, delta) => { if (group.current) easing.damp(group.current.position, 'y', profile ? -4 : 0, 0.5, delta) })
+  const settled = useRef(false)
+  useEffect(() => { settled.current = false }, [profile])
+  useFrame((_, delta) => {
+    if (!group.current || settled.current) return
+    settled.current = !easing.damp(group.current.position, 'y', profile ? -4 : 0, 0.5, delta)
+  })
   return (
     <group ref={group}><Text
       layers-mask={1}

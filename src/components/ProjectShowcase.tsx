@@ -1,10 +1,27 @@
-import { useState, type CSSProperties } from 'react'
+import { useRef, useState, type CSSProperties } from 'react'
 import { IconArrowUpRight, IconArrowsMaximize } from '@tabler/icons-react'
 import type { ProjectShowcaseContent } from '../data/projectShowcases'
 
 export function ProjectShowcase({ content, projectName }: { content: ProjectShowcaseContent; projectName: string }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const decoded = useRef(new Map<string, Promise<void>>())
   const screen = content.screens[selectedIndex]
+
+  const selectScreen = async (index: number) => {
+    const next = content.screens[index]
+    if (next.media !== 'video') {
+      let ready = decoded.current.get(next.src)
+      if (!ready) {
+        const image = new Image()
+        image.decoding = 'async'
+        image.src = next.src
+        ready = image.decode().then(() => undefined, () => undefined)
+        decoded.current.set(next.src, ready)
+      }
+      await ready
+    }
+    setSelectedIndex(index)
+  }
 
   return (
     <section id="project-product" data-project-section className="project-details__story project-showcase" data-layout={content.layout} aria-labelledby="project-product-title">
@@ -18,7 +35,7 @@ export function ProjectShowcase({ content, projectName }: { content: ProjectShow
           {content.screens.length > 1 && (
             <div className="project-showcase__selector" role="group" aria-label={`Choose a ${projectName} product view`}>
               {content.screens.map((item, index) => (
-                <button key={item.id} type="button" aria-pressed={selectedIndex === index} aria-controls="project-product-view" onClick={() => setSelectedIndex(index)}>
+                <button key={item.id} type="button" aria-pressed={selectedIndex === index} aria-controls="project-product-view" onClick={() => { void selectScreen(index) }}>
                   {item.label}<IconArrowUpRight size={16} stroke={1.5} aria-hidden="true" />
                 </button>
               ))}

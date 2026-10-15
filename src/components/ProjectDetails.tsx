@@ -18,6 +18,7 @@ const projectSections = [
 
 export function ProjectDetails({ project, onClose, closing = false }: { project: Project; onClose: () => void; closing?: boolean }) {
   const panel = useRef<HTMLElement>(null)
+  const activeSectionRef = useRef('overview')
   const [activeSection, setActiveSection] = useState('overview')
   const sections = [
     ...projectSections.flatMap((section) => {
@@ -39,32 +40,60 @@ export function ProjectDetails({ project, onClose, closing = false }: { project:
     const root = panel.current
     if (!root) return
     const sections = Array.from(root.querySelectorAll<HTMLElement>('[data-project-section]'))
+    const body = root.querySelector<HTMLElement>('.project-details__body')
     let frame: number | null = null
+    let sectionOffsets: number[] = []
+    const setActive = (sectionId: string) => {
+      if (activeSectionRef.current === sectionId) return
+      activeSectionRef.current = sectionId
+      setActiveSection(sectionId)
+    }
+    const measureSections = () => {
+      const contentTop = root.getBoundingClientRect().top + root.clientTop
+      sectionOffsets = sections.map((section) => section.getBoundingClientRect().top - contentTop + root.scrollTop)
+    }
     const updateActiveSection = () => {
       frame = null
-      // Track the chapter at the reading position, regardless of its height.
-      const readingPosition = root.getBoundingClientRect().top + root.clientTop + root.clientHeight * 0.25
-      let active: HTMLElement | undefined = sections[0]
-      for (const section of sections) {
-        if (section.getBoundingClientRect().top > readingPosition) break
-        active = section
+      const readingPosition = root.scrollTop + root.clientHeight * 0.25
+      let activeIndex = 0
+      for (let index = 1; index < sectionOffsets.length; index++) {
+        if (sectionOffsets[index] > readingPosition) break
+        activeIndex = index
       }
       if (root.scrollTop > 0 && root.scrollTop + root.clientHeight >= root.scrollHeight - 1) {
-        active = sections.at(-1)
+        activeIndex = sections.length - 1
       }
-      if (active) setActiveSection(active.id.replace('project-', ''))
+      const active = sections[activeIndex]
+      if (active) setActive(active.id.replace('project-', ''))
     }
     const scheduleUpdate = () => {
       if (frame === null) frame = window.requestAnimationFrame(updateActiveSection)
     }
+    const scheduleMeasure = () => {
+      if (frame !== null) return
+      frame = window.requestAnimationFrame(() => {
+        frame = null
+        measureSections()
+        updateActiveSection()
+      })
+    }
     root.addEventListener('scroll', scheduleUpdate, { passive: true })
-    const observer = new ResizeObserver(scheduleUpdate)
+    window.addEventListener('resize', scheduleMeasure)
+    const observer = new ResizeObserver(scheduleMeasure)
     observer.observe(root)
+    if (body) observer.observe(body)
     sections.forEach((section) => observer.observe(section))
+    const mutations = new MutationObserver(scheduleMeasure)
+    if (body) mutations.observe(body, { childList: true, subtree: true, characterData: true, attributes: true })
+    activeSectionRef.current = 'overview'
+    setActiveSection('overview')
+    measureSections()
     updateActiveSection()
     return () => {
       root.removeEventListener('scroll', scheduleUpdate)
+      window.removeEventListener('resize', scheduleMeasure)
       observer.disconnect()
+      mutations.disconnect()
       if (frame !== null) window.cancelAnimationFrame(frame)
     }
   }, [project.title])

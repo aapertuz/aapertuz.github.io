@@ -1,6 +1,7 @@
 import { useFrame } from '@react-three/fiber'
 import { useEffect, useMemo } from 'react'
 import { CanvasTexture, Color, RepeatWrapping, Vector4, type MeshStandardMaterial } from 'three'
+import { measureUpdateEnd, measureUpdateStart } from './performanceDiagnostics'
 
 import type { DoorReveal } from '../scene/entrance'
 import type { DoorPlacement } from '../scene/layout'
@@ -9,7 +10,12 @@ import { FRAME_WIDTH, FRAME_THICKNESS } from './frameGeometry'
 export function Floor({ placements, reveals }: { placements: DoorPlacement[]; reveals: DoorReveal[] }) {
   const spillReveals = useMemo(() => ({ value: placements.map(() => 0) }), [placements])
   useFrame(() => {
-    for (let index = 0; index < reveals.length; index++) spillReveals.value[index] = reveals[index].current
+    const startedAt = measureUpdateStart()
+    for (let index = 0; index < reveals.length; index++) {
+      const next = reveals[index].current
+      if (spillReveals.value[index] !== next) spillReveals.value[index] = next
+    }
+    measureUpdateEnd(startedAt)
   })
   // Evaluate every pool on the actual floor: no transparent decals or seams.
   const illuminateFloor = useMemo(() => (shader: Parameters<MeshStandardMaterial['onBeforeCompile']>[0]) => {
@@ -34,28 +40,21 @@ export function Floor({ placements, reveals }: { placements: DoorPlacement[]; re
     `).replace('#include <emissivemap_fragment>', `#include <emissivemap_fragment>
       float grain = mix(0.68,1.0,spillNoise(floorWorld.xz*vec2(24.0,55.0)));
       float variation = mix(0.72,1.0,spillNoise(floorWorld.xz*vec2(2.8,8.0)));
-      for (int i=0; i<6; i++) {
-        vec2 offset = floorWorld.xz - spillOrigins[i].xy;
-        float across = dot(offset, vec2(spillOrigins[i].z, -spillOrigins[i].w));
-        float forward = dot(offset, spillOrigins[i].wz);
-        float distanceOut = max(forward,0.0);
-        float spread = 0.72 + distanceOut * 0.16 * spillShape[i].x;
-        float lateral = exp(-pow(abs(across)/spread, 3.0));
-        float reach = exp(-distanceOut * spillShape[i].z * 0.62);
-        float endFade = 1.0-smoothstep(spillShape[i].y*0.65,spillShape[i].y,distanceOut);
-        float behind = smoothstep(-0.35,0.02,forward);
-        float contact = exp(-distanceOut*8.0) * exp(-pow(abs(across)/0.8,8.0));
-        totalEmissiveRadiance += spillColors[i] * (lateral*reach*endFade*0.8 + contact*1.0) * behind * grain * variation * spillReveals[i];
-
-      }
-    `).replace('#include <opaque_fragment>', `
-      // Local occlusion around the two actual post footprints. Apply after
-      // lighting so the doorway spill cannot shine through the metal's base.
       float contactVisibility = 1.0;
       for (int i=0; i<6; i++) {
         vec2 offset = floorWorld.xz - spillOrigins[i].xy;
         float across = dot(offset, vec2(spillOrigins[i].z, -spillOrigins[i].w));
         float forward = dot(offset, spillOrigins[i].wz);
+        if (spillReveals[i] > 0.0) {
+          float distanceOut = max(forward,0.0);
+          float spread = 0.72 + distanceOut * 0.16 * spillShape[i].x;
+          float lateral = exp(-pow(abs(across)/spread, 3.0));
+          float reach = exp(-distanceOut * spillShape[i].z * 0.62);
+          float endFade = 1.0-smoothstep(spillShape[i].y*0.65,spillShape[i].y,distanceOut);
+          float behind = smoothstep(-0.35,0.02,forward);
+          float contact = exp(-distanceOut*8.0) * exp(-pow(abs(across)/0.8,8.0));
+          totalEmissiveRadiance += spillColors[i] * (lateral*reach*endFade*0.8 + contact*1.0) * behind * grain * variation * spillReveals[i];
+        }
         vec2 foot = vec2(abs(across) - ${(FRAME_WIDTH - FRAME_THICKNESS) / 2}, forward);
         vec2 outsideFoot = max(abs(foot) - vec2(${FRAME_THICKNESS / 2}, 0.19), 0.0);
         float separation = length(outsideFoot);
@@ -64,6 +63,9 @@ export function Floor({ placements, reveals }: { placements: DoorPlacement[]; re
         float occlusion = (tight * 0.72 + soft * 0.22) * spillShape[i].w;
         contactVisibility *= 1.0 - occlusion;
       }
+    `).replace('#include <opaque_fragment>', `
+      // Contact visibility is combined with the spill loop so each doorway's
+      // floor-space coordinates are computed once per fragment.
       outgoingLight *= contactVisibility;
       #include <opaque_fragment>
     `)
